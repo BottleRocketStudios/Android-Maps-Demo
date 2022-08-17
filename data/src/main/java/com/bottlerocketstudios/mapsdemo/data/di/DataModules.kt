@@ -1,7 +1,9 @@
 package com.bottlerocketstudios.mapsdemo.data.di
 
 import com.bottlerocketstudios.mapsdemo.data.implementations.YelpRepositoryImplementation
+import com.bottlerocketstudios.mapsdemo.data.network.YelpApiKeyInterceptor
 import com.bottlerocketstudios.mapsdemo.data.network.YelpService
+import com.bottlerocketstudios.mapsdemo.data.network.YelpServiceFactory
 import com.bottlerocketstudios.mapsdemo.data.serialization.DateTimeAdapter
 import com.bottlerocketstudios.mapsdemo.data.serialization.ProtectedPropertyAdapter
 import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
@@ -21,31 +23,8 @@ object DataModule {
     }
 }
 
-private enum class KoinNamedNetwork {
-    Yelp
-}
-
 object NetworkModule {
     val module = module {
-        single(named(KoinNamedNetwork.Yelp)) {
-            provideYelpRetrofit(
-                okHttpClient = get(named(KoinNamedNetwork.Yelp)),
-                moshi = get()
-            )
-        }
-        single { provideYelpService(get(named(KoinNamedNetwork.Yelp))) }
+        single { YelpServiceFactory().produce() }
     }
-
-}
-
-private fun provideYelpRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
-    return Retrofit.Builder()
-        .baseUrl("https://api.yelp.com/v3")
-        .client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .build()
-}
-
-private fun provideYelpService(retrofit: Retrofit): YelpService {
-    return retrofit.create(YelpService::class.java)
 }

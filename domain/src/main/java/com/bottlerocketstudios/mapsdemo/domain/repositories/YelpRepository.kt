@@ -6,7 +6,6 @@ import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
 import kotlinx.coroutines.flow.StateFlow
 
 interface YelpRepository: Repository {
-    val businesses: StateFlow<Business>
 
-    suspend fun getBusinessesByLatLng(yelpLatLngSearch: YelpLatLngSearch)
+    suspend fun getBusinessesByLatLng(yelpLatLngSearch: YelpLatLngSearch): Result<List<Business>>
 }

@@ -1,20 +1,12 @@
 package com.bottlerocketstudios.places.implementations
 
 import com.bottlerocketstudios.mapsdemo.domain.models.PlaceSearchEventIdle
-import com.bottlerocketstudios.mapsdemo.domain.models.PlacesRequest
 import com.bottlerocketstudios.mapsdemo.domain.models.PlacesSearchEvent
-import com.bottlerocketstudios.mapsdemo.domain.models.PlacesSearchEventError
 import com.bottlerocketstudios.mapsdemo.domain.repositories.PlacesRepository
 import com.google.android.libraries.places.api.net.PlacesClient
 import org.koin.core.component.inject
-import com.google.android.libraries.places.ktx.api.net.awaitFindAutocompletePredictions
-import com.google.android.libraries.places.ktx.api.net.findAutocompletePredictionsRequest
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 
@@ -28,7 +20,9 @@ internal class PlacesRepositoryImplementation() : PlacesRepository, KoinComponen
     override val placesEvents: StateFlow<PlacesSearchEvent> = _placesAutocompletePredictionEvents
     override val placeDetails: StateFlow<PlacesSearchEvent> = _placeDetails
 
-    override suspend fun getPlaces(placesRequest: PlacesRequest) {
+
+    // To be used later when we implement places
+    /*override suspend fun getPlaces(placesRequest: PlacesRequest) {
         val handler = CoroutineExceptionHandler { _, throwable ->
             _placesAutocompletePredictionEvents.value = PlacesSearchEventError(throwable)
         }
@@ -46,7 +40,7 @@ internal class PlacesRepositoryImplementation() : PlacesRepository, KoinComponen
             val response = placesClient.awaitFindAutocompletePredictions(request)
             //_placesAutocompletePredictionEvents.value = PlacesSearchEventFound(response.autocompletePredictions)
         }
-    }
+    }*/
 
     // To be used later when we need to implement places auto predictions
     /*override suspend fun onAutoCompletePredictionSelected(prediction: AutocompletePrediction) {

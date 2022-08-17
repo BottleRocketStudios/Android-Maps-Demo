@@ -22,4 +22,6 @@ interface BuildConfigProvider {
     val buildIdentifier: String
 
     val mapsApiKey: String
+
+    val yelpApiKey: String
 }

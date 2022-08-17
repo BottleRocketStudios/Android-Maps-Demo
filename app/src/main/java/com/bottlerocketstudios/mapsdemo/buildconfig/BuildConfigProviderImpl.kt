@@ -12,6 +12,8 @@ class BuildConfigProviderImpl : BuildConfigProvider {
         get() = BuildConfig.BUILD_IDENTIFIER
     override val mapsApiKey: String
         get() = BuildConfig.MAPS_API_KEY
+    override val yelpApiKey: String
+        get() = BuildConfig.YELP_API_KEY
 }
 
 private fun isProductionReleaseBuild() = !BuildConfig.DEBUG && BuildConfig.PRODUCTION
