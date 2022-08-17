@@ -1,4 +1,4 @@
-package com.bottlerocketstudios.mapsdemo.domain.models
+package com.bottlerocketstudios.mapsdemo.data.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

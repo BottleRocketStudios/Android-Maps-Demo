@@ -3,10 +3,8 @@ package com.bottlerocketstudios.mapsdemo.data.implementations
 import com.bottlerocketstudios.mapsdemo.data.network.YelpService
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
-import com.bottlerocketstudios.mapsdemo.domain.models.convertToBusiness
+import com.bottlerocketstudios.mapsdemo.data.model.convertToBusiness
 import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

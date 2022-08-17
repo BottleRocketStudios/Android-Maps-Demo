@@ -1,8 +1,6 @@
 package com.bottlerocketstudios.mapsdemo.data.network
 
-import com.bottlerocketstudios.mapsdemo.domain.models.BusinessDTO
-import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
-import retrofit2.Response
+import com.bottlerocketstudios.mapsdemo.data.model.BusinessDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
