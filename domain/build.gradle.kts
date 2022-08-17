@@ -1,6 +1,8 @@
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
+    id(Config.ApplyPlugins.KSP)
+
 }
 
 java {
@@ -12,8 +14,6 @@ dependencies {
     // Kotlin/coroutines
     kotlinDependencies()
     coroutineDependencies()
-    // Places
-    placesApiDependencies()
 
     // Test
     junitDependencies()
@@ -22,4 +22,5 @@ dependencies {
     archCoreTestingDependencies()
     kotlinxCoroutineTestingDependencies()
     turbineDependencies()
+    moshiDependencies()
 }

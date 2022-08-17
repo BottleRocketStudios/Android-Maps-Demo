@@ -104,6 +104,7 @@ val devConfigurations: List<Configuration> = listOf(
 
 dependencies {
 
+    implementation(project(mapOf("path" to ":domain")))
     // TODO: List out each jar/aar explicitly to help avoid the danger of someone "slipping" a dangerous lib into the directory
     //  implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
