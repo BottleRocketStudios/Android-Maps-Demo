@@ -5,7 +5,6 @@ import androidx.startup.Initializer
 import com.bottlerocketstudios.mapsdemo.buildconfig.BuildConfigProviderImpl
 import com.bottlerocketstudios.mapsdemo.data.di.DataModule
 import com.bottlerocketstudios.mapsdemo.data.di.NetworkModule
-import com.bottlerocketstudios.mapsdemo.data.di.ViewModelModule
 import com.bottlerocketstudios.mapsdemo.di.AppModule
 import com.bottlerocketstudios.places.di.PlacesModule
 import org.koin.android.ext.koin.androidContext
@@ -38,7 +37,6 @@ class KoinStartupInitializer : Initializer<KoinApplication> {
                     PlacesModule.module,
                     DataModule.module,
                     NetworkModule.module,
-                    ViewModelModule.module,
                 )
             )
         }

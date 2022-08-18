@@ -1,5 +1,7 @@
 package com.bottlerocketstudios.mapsdemo.data.model
 
+import com.bottlerocketstudios.mapsdemo.domain.models.Business
+import com.bottlerocketstudios.mapsdemo.domain.models.Coordinates
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
