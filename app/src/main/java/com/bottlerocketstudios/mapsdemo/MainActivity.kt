@@ -6,8 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.bottlerocketstudios.compose.map.GoogleMapScreenState
 import com.bottlerocketstudios.compose.map.GoogleMapsView
+import com.bottlerocketstudios.compose.map.yelpTestCard
+import com.bottlerocketstudios.compose.utils.asMutableState
 import com.bottlerocketstudios.mapsdemo.ui.map.YelpViewModel
+import com.bottlerocketstudios.mapsdemo.ui.map.toState
 import com.bottlerocketstudios.mapsdemo.ui.theme.AndroidMapsDemoTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -18,7 +22,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AndroidMapsDemoTheme {
-                GoogleMapsView(toolbarEnabled = false, modifier = Modifier.fillMaxSize())
+                GoogleMapsView(toolbarEnabled = false, modifier = Modifier.fillMaxSize(), googleMapScreenState = yelpViewModel.toState())
             }
         }
     }
@@ -28,6 +32,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     AndroidMapsDemoTheme {
-        GoogleMapsView(toolbarEnabled = false, modifier = Modifier.fillMaxSize())
+        GoogleMapsView(toolbarEnabled = false, modifier = Modifier.fillMaxSize(), googleMapScreenState = GoogleMapScreenState(
+            listOf(yelpTestCard).asMutableState()
+        ))
     }
 }

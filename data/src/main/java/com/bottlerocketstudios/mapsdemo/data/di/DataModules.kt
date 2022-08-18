@@ -9,9 +9,11 @@ import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
 import com.bottlerocketstudios.mapsdemo.infrastructure.coroutine.DispatcherProviderImplementation
 import com.squareup.moshi.Moshi
 import org.koin.dsl.module
+import java.time.Clock
 
 object DataModule {
     val module = module {
+        single<Clock> { Clock.systemDefaultZone() }
         single<Moshi> { Moshi.Builder().add(DateTimeAdapter(clock = get())).add(ProtectedPropertyAdapter()).build() }
         single<YelpRepository>{ YelpRepositoryImplementation() }
         single<DispatcherProvider>{ DispatcherProviderImplementation() }

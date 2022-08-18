@@ -18,6 +18,10 @@ class YelpViewModel: BaseViewModel() {
     private val _yelpBusinessState = MutableStateFlow<List<Business>>(emptyList())
     val yelpBusinessState: StateFlow<List<Business>> = _yelpBusinessState
 
+    init {
+        getYelpBusinesses(YelpLatLngSearch(32.7767, 96.7970))
+    }
+
     fun getYelpBusinesses(yelpLatLngSearch: YelpLatLngSearch) {
         viewModelScope.launch(dispatcherProvider.IO) {
             yelpRepository.getBusinessesByLatLng(yelpLatLngSearch)
