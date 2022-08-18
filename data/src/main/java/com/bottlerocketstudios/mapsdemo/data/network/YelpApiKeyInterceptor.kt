@@ -13,6 +13,6 @@ internal class YelpApiKeyInterceptor() : Interceptor, KoinComponent {
     override fun intercept(chain: Interceptor.Chain): Response =
         chain.proceed(
             chain.request().newBuilder()
-                .header("Authorization Bearer", buildConfigProvider.yelpApiKey).build()
+                .header("Bearer", buildConfigProvider.yelpApiKey).build()
         )
 }

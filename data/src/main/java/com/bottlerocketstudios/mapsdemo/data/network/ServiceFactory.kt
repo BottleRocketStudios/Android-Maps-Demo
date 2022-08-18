@@ -1,5 +1,6 @@
 package com.bottlerocketstudios.mapsdemo.data.network
 
+import com.bottlerocketstudios.mapsdemo.infrastructure.retrofitadapter.ResultRetrofitAdapterFactory
 import com.squareup.moshi.Moshi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -23,6 +24,7 @@ abstract class ServiceFactory: KoinComponent {
             .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addCallAdapterFactory(ResultRetrofitAdapterFactory())
             .build()
     }
 
