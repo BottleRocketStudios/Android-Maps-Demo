@@ -1,12 +1,14 @@
 package com.bottlerocketstudios.compose.map
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Card
@@ -20,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.compose.utils.Preview
@@ -36,7 +37,7 @@ fun YelpCardLayout(business: Business, selectItem: (business: Business) -> Unit)
             .clickable {
                 selectItem(business)
             }
-            .wrapContentHeight()
+            .background(color = Color.DarkGray)
     ) {
         Row(
             modifier = Modifier
@@ -46,20 +47,10 @@ fun YelpCardLayout(business: Business, selectItem: (business: Business) -> Unit)
                     top = Dimens.grid_1,
                     bottom = Dimens.grid_1
                 )
-                .wrapContentHeight(align = Alignment.CenterVertically)
-                .fillMaxWidth()
         ) {
-            Box(
-                modifier = Modifier.wrapContentWidth()
-            ) {
-                AsyncImage(model = business.imageUrl, contentDescription = null )
-            }
-            Row(
-                modifier = Modifier
-                    .wrapContentHeight(align = Alignment.Top)
-            ) {
-                BusinessDescriptionComponent(business = business, modifier = Modifier.weight(2f) )
-            }
+            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = Modifier.height(100.dp).width(100.dp).background(Color.Blue) )
+
+            BusinessDescriptionComponent(business = business, modifier = Modifier )
         }
     } 
 }
@@ -74,8 +65,6 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
                 .padding(
                     top = Dimens.grid_1
                 )
-                .wrapContentHeight(align = Alignment.CenterVertically)
-                .fillMaxWidth()
         )
         Text(
             text = stringResource(id = R.string.latitude_longitude_format,
@@ -85,16 +74,22 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
                 .padding(
                     top = Dimens.grid_0_5
                 )
-                .wrapContentHeight()
-                .fillMaxWidth()
         )
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun YelpCardPreview() {
     Preview {
         YelpCardLayout(business = yelpTestCard, selectItem ={})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun showBusinessDescriptionComponent() {
+    Preview {
+        BusinessDescriptionComponent(business = yelpTestCard, modifier = Modifier)
     }
 }
