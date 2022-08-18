@@ -1,10 +1,27 @@
 package com.bottlerocketstudios.mapsdemo.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalConfiguration
+import com.bottlerocketstudios.compose.resources.Dimensions
+import com.bottlerocketstudios.compose.resources.smallDimensions
+import com.bottlerocketstudios.compose.resources.sw360Dimensions
+
+private const val SMALL_SCREEN_WIDTH_DP = 360
+private val LocalAppDimens = staticCompositionLocalOf {
+    sw360Dimensions
+}
+
+private val LocalAppColors = staticCompositionLocalOf {
+    LightColorPalette
+}
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -27,6 +44,16 @@ private val LightColorPalette = lightColors(
     */
 )
 
+val Dimens: Dimensions
+    @Composable
+    get() = AndroidMapsDemoTheme.dimens
+
+object AndroidMapsDemoTheme {
+    val dimens: Dimensions
+    @Composable
+    get() = LocalAppDimens.current
+}
+
 @Composable
 fun AndroidMapsDemoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -37,11 +64,39 @@ fun AndroidMapsDemoTheme(
     } else {
         LightColorPalette
     }
+    val configuration = LocalConfiguration.current
+    val dimensions = if(configuration.screenWidthDp <= SMALL_SCREEN_WIDTH_DP ) smallDimensions else sw360Dimensions
 
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+    ProvideDimens(dimensions = dimensions) {
+        ProvideColors(colors = colors) {
+            MaterialTheme(
+                colors = colors,
+                typography = Typography,
+                shapes = Shapes,
+            ) {
+                content()
+            }
+        }
+    }
+
 }
+@Composable
+fun ProvideDimens(
+    dimensions: Dimensions,
+    content: @Composable () -> Unit
+) {
+    val dimensionSet = remember { dimensions }
+    CompositionLocalProvider(LocalAppDimens provides dimensionSet, content = content)
+}
+
+@Composable
+fun ProvideColors(
+    colors: Colors,
+    content: @Composable () -> Unit
+) {
+    val colorPalette = remember { colors }
+    CompositionLocalProvider(LocalAppColors provides colorPalette, content = content)
+}
+
+
+

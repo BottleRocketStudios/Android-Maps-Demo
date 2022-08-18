@@ -1,4 +1,4 @@
-package com.bottlerocketstudios.mapsdemo.data.viewmodels
+package com.bottlerocketstudios.mapsdemo.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

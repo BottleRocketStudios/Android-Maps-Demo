@@ -7,10 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.bottlerocketstudios.compose.GoogleMapsView
+import com.bottlerocketstudios.mapsdemo.ui.map.YelpViewModel
 import com.bottlerocketstudios.mapsdemo.ui.theme.AndroidMapsDemoTheme
 import com.google.android.libraries.places.api.Places
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+    private val yelpViewModel: YelpViewModel  by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
