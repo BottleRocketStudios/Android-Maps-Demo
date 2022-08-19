@@ -1,10 +1,11 @@
 package com.bottlerocketstudios.compose.map
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,9 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.compose.utils.Preview
+import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
@@ -40,25 +43,18 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         mutableStateOf(MapUiSettings(mapToolbarEnabled = toolbarEnabled))
     }
 
-    Box(modifier.fillMaxSize()) {
-        Column {
-            GoogleMap(properties = mapProperties, uiSettings = mapUiSettings)
+        Column(modifier = Modifier.fillMaxSize()) {
+            GoogleMap(
+                properties = mapProperties,
+                uiSettings = mapUiSettings,
+                modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth(),
+            )
+
             if(googleMapScreenState.businessList.value.isNotEmpty()) {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(Dimens.grid_1_5),
-                    modifier = Modifier
-                        .padding(
-                            start = Dimens.grid_1_5,
-                            end = Dimens.grid_1_5
-                        )
-                        .fillMaxWidth()
-                ) {
-                    items(items = googleMapScreenState.businessList.value,
-                    itemContent = {item -> YelpCardLayout(business = item, selectItem = {}) })
-                }
+                YelpBusinessList(businessList = googleMapScreenState.businessList.value)
             }
-        }
-        Column {
             Button(onClick = {
                 mapUiSettings = mapUiSettings.copy(
                     mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
@@ -66,7 +62,25 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             }) {
                 Text(text = stringResource(R.string.toggle_map_toolbar))
             }
+
         }
+
+}
+
+@Composable
+fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(Dimens.grid_1_5),
+        modifier = Modifier
+            .padding(
+                start = Dimens.grid_1_5,
+                end = Dimens.grid_1_5
+            )
+            .fillMaxWidth()
+            .weight(1f)
+    ) {
+        items(items = businessList,
+            itemContent = {item -> YelpCardLayout(business = item, selectItem = {}) })
     }
 }
 
@@ -74,6 +88,14 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
 @Composable
 fun GoogleMapPreview() {
     Preview {
-        GoogleMap(modifier = Modifier.fillMaxSize())
+        GoogleMapsView(modifier = Modifier.fillMaxSize(), googleMapScreenState = googleMapScreenStateTest)
+    }
+}
+
+@Preview
+@Composable
+fun YelpBusinessListPreview() {
+    Preview {
+        //YelpBusinessList(businessList = listOf(yelpTestCard))
     }
 }

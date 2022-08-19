@@ -1,6 +1,6 @@
 package com.bottlerocketstudios.mapsdemo.data.network
 
-import com.bottlerocketstudios.mapsdemo.data.model.BusinessDTO
+import com.bottlerocketstudios.mapsdemo.data.model.YelpBusinessesDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,5 +10,5 @@ internal interface YelpService {
     suspend fun getBusinessesByLatLng(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ): Result<List<BusinessDTO>>
+    ): Result<YelpBusinessesDTO>
 }

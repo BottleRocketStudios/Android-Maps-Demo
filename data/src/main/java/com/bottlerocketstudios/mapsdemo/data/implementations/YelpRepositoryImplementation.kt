@@ -13,10 +13,8 @@ internal class YelpRepositoryImplementation: YelpRepository, KoinComponent {
     private val yelpService: YelpService by inject()
 
     override suspend fun getBusinessesByLatLng(yelpLatLngSearch: YelpLatLngSearch): Result<List<Business>> =
-        yelpService.getBusinessesByLatLng(yelpLatLngSearch.latitude,yelpLatLngSearch.longitude).map { businessList ->
-            businessList.map {
-                it.convertToBusiness()
-            }
+        yelpService.getBusinessesByLatLng(yelpLatLngSearch.latitude,yelpLatLngSearch.longitude).map { yelpSearch ->
+            yelpSearch.businesses.map { businessDTO -> businessDTO.convertToBusiness() }
         }
 
 }
