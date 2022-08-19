@@ -6,5 +6,6 @@ import com.bottlerocketstudios.compose.map.GoogleMapScreenState
 
 @Composable
 fun YelpViewModel.toState() = GoogleMapScreenState(
-    businessList = yelpBusinessState.collectAsState(emptyList())
+    businessList = yelpBusinessState.collectAsState(emptyList()),
+    dallasLatLng = dallasLatLng
 )

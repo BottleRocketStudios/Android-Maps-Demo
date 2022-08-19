@@ -24,13 +24,18 @@ import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.rememberCameraPositionState
 
 // https://developers.google.com/maps/documentation/android-sdk/views#zoom
 private const val MAX_ZOOM_LEVEL = 15f // Street level
 private const val MIN_ZOOM_LEVEL = 5f // Landmass/Continent
+private const val CITY_ZOOM_LEVEL = 11f
 
 @Composable
 fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: Boolean = false, modifier: Modifier) {
@@ -43,14 +48,20 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         mutableStateOf(MapUiSettings(mapToolbarEnabled = toolbarEnabled))
     }
 
+    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(googleMapScreenState.dallasLatLng, CITY_ZOOM_LEVEL)
+    }
+
         Column(modifier = Modifier.fillMaxSize()) {
             GoogleMap(
                 properties = mapProperties,
                 uiSettings = mapUiSettings,
                 modifier = Modifier
-                    .height(200.dp)
+                    .height(400.dp)
                     .fillMaxWidth(),
+                cameraPositionState = cameraPositionState
             )
+            cameraPositionState.move(CameraUpdateFactory.zoomIn())
 
             if(googleMapScreenState.businessList.value.isNotEmpty()) {
                 YelpBusinessList(businessList = googleMapScreenState.businessList.value)
@@ -74,7 +85,8 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
         modifier = Modifier
             .padding(
                 start = Dimens.grid_1_5,
-                end = Dimens.grid_1_5
+                end = Dimens.grid_1_5,
+                top = Dimens.grid_1_5
             )
             .fillMaxWidth()
             .weight(1f)

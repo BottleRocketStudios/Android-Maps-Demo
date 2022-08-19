@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.resources.Dimens
+import com.bottlerocketstudios.compose.resources.typography
 import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.launchpad.compose.bold
 
@@ -55,19 +56,21 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
     Column(modifier = modifier) {
         Text(
             text = business.businessName,
-            style = MaterialTheme.typography.h3.bold(),
+            style = typography.h1.bold(),
             modifier = Modifier
                 .padding(
-                    top = Dimens.grid_1
+                    top = Dimens.grid_1,
+                    start = Dimens.grid_1
                 )
         )
         Text(
             text = stringResource(id = R.string.latitude_longitude_format,
                 business.coordinates.latitude.toString(), business.coordinates.longitude.toString()),
-            style = MaterialTheme.typography.h5,
+            style = typography.body1,
             modifier = Modifier
                 .padding(
-                    top = Dimens.grid_0_5
+                    top = Dimens.grid_0_5,
+                    start = Dimens.grid_1
                 )
         )
     }
