@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -44,7 +45,7 @@ fun YelpCardLayout(business: Business, selectItem: (business: Business) -> Unit)
                     bottom = Dimens.grid_1
                 )
         ) {
-            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = Modifier.height(100.dp).width(100.dp).background(Color.Blue) )
+            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = Modifier.height(100.dp).width(100.dp).background(Color.Black) )
 
             BusinessDescriptionComponent(business = business, modifier = Modifier )
         }
@@ -71,7 +72,7 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
                 .padding(
                     top = Dimens.grid_0_5,
                     start = Dimens.grid_1
-                )
+                ).fillMaxWidth()
         )
     }
 }

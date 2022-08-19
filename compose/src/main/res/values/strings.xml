@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="toggle_map_toolbar">Toggle Map Toolbar</string>
-    <string name="latitude_longitude_format">Latitude:%1$s Longitude: %2$s</string>
+    <string name="latitude_longitude_format">Latitude:%1$s\nLongitude: %2$s</string>
 </resources>

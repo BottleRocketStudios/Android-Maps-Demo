@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.bottlerocketstudios.compose.map.GoogleMapScreenState
 import com.bottlerocketstudios.compose.map.GoogleMapsView
-import com.bottlerocketstudios.compose.map.yelpTestCard
-import com.bottlerocketstudios.compose.utils.asMutableState
+import com.bottlerocketstudios.compose.map.googleMapScreenStateTest
 import com.bottlerocketstudios.mapsdemo.ui.map.YelpViewModel
 import com.bottlerocketstudios.mapsdemo.ui.map.toState
 import com.bottlerocketstudios.mapsdemo.ui.theme.AndroidMapsDemoTheme
@@ -32,8 +30,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     AndroidMapsDemoTheme {
-        GoogleMapsView(toolbarEnabled = false, modifier = Modifier.fillMaxSize(), googleMapScreenState = GoogleMapScreenState(
-            listOf(yelpTestCard).asMutableState()
-        ))
+        GoogleMapsView(
+            toolbarEnabled = false,
+            modifier = Modifier.fillMaxSize(),
+            googleMapScreenState = googleMapScreenStateTest
+        )
     }
 }

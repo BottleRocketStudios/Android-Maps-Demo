@@ -1,5 +1,6 @@
 package com.bottlerocketstudios.compose.map
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,21 +49,22 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
     var mapUiSettings by remember {
         mutableStateOf(MapUiSettings(mapToolbarEnabled = toolbarEnabled))
     }
-
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
+    // Observing and controlling the camera's state can be done with a CameraPositionState
+    val googleCameraPositionState: CameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(googleMapScreenState.dallasLatLng, CITY_ZOOM_LEVEL)
     }
-
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.DarkGray)
+        ) {
             GoogleMap(
                 properties = mapProperties,
                 uiSettings = mapUiSettings,
                 modifier = Modifier
                     .height(400.dp)
                     .fillMaxWidth(),
-                cameraPositionState = cameraPositionState
+                cameraPositionState = googleCameraPositionState
             )
-            cameraPositionState.move(CameraUpdateFactory.zoomIn())
 
             if(googleMapScreenState.businessList.value.isNotEmpty()) {
                 YelpBusinessList(businessList = googleMapScreenState.businessList.value)
