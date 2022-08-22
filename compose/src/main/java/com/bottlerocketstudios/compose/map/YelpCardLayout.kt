@@ -1,5 +1,6 @@
 package com.bottlerocketstudios.compose.map
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,18 +26,19 @@ import com.bottlerocketstudios.launchpad.compose.bold
 
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun YelpCardLayout(business: Business, selectItem: (business: Business) -> Unit) {
+fun YelpCardLayout(business: Business, modifier: Modifier, selectItem: (business: Business) -> Unit) {
     Card(
         elevation = Dimens.plane_3,
-        modifier = Modifier
+        modifier = modifier
             .clickable {
                 selectItem(business)
             }
             .background(color = Color.DarkGray)
     ) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .padding(
                     start = Dimens.grid_1,
                     end = Dimens.grid_1,
@@ -44,9 +46,9 @@ fun YelpCardLayout(business: Business, selectItem: (business: Business) -> Unit)
                     bottom = Dimens.grid_1
                 )
         ) {
-            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = Modifier.height(100.dp).width(100.dp).background(Color.Black))
+            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = modifier.height(100.dp).width(100.dp).background(Color.Black) )
 
-            BusinessDescriptionComponent(business = business, modifier = Modifier)
+            BusinessDescriptionComponent(business = business, modifier = modifier )
         }
     }
 }
@@ -82,7 +84,7 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
 @Composable
 fun YelpCardPreview() {
     Preview {
-        YelpCardLayout(business = yelpTestCard, selectItem = {})
+        YelpCardLayout(business = yelpTestCard, selectItem ={}, modifier = Modifier)
     }
 }
 

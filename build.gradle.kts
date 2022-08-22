@@ -26,9 +26,10 @@ plugins {
 }
 
 secrets {
-    // To add your Maps API Key to this project:
+    // To add your Maps and Yelp API Key to this project:
     // 1. Add this line to your local.properties file where YOUR_API_KEY is your API key:
     // MAPS_API_KEY=YOUR_API_KEY
+    // YELP_API_KEY
     defaultPropertiesFileName = "local.defaults.properties"
 }
 

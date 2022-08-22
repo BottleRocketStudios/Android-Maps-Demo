@@ -24,6 +24,7 @@ class ResultCall<T>(val delegate: Call<T>) :
                             )
                         )
                     } else {
+                        // HTTP Error codes will be here
                         callback.onResponse(
                             this@ResultCall,
                             Response.success(

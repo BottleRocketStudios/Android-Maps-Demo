@@ -1,5 +1,8 @@
 package com.bottlerocketstudios.compose.map
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -66,8 +69,19 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             cameraPositionState = googleCameraPositionState
         )
 
-        if (googleMapScreenState.businessList.value.isNotEmpty()) {
-            YelpBusinessList(businessList = googleMapScreenState.businessList.value)
+            Button(onClick = {
+                mapUiSettings = mapUiSettings.copy(
+                    mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
+                )
+            }) {
+                Text(text = stringResource(R.string.toggle_map_toolbar))
+            }
+
+            AnimatedVisibility(googleMapScreenState.businessList.value.isNotEmpty()) {
+                YelpBusinessList(businessList = googleMapScreenState.businessList.value)
+            }
+
+
         }
         Button(onClick = {
             mapUiSettings = mapUiSettings.copy(
@@ -76,9 +90,9 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         }) {
             Text(text = stringResource(R.string.toggle_map_toolbar))
         }
-    }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
     LazyColumn(
@@ -87,14 +101,19 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
             .padding(
                 start = Dimens.grid_1_5,
                 end = Dimens.grid_1_5,
-                top = Dimens.grid_1_5
+                top = Dimens.grid_1_5,
+                bottom = Dimens.grid_1_5
             )
             .fillMaxWidth()
             .weight(1f)
     ) {
-        items(
-            items = businessList,
-            itemContent = { item -> YelpCardLayout(business = item, selectItem = {}) }
+        items(items = businessList,
+            itemContent = { item ->
+                YelpCardLayout(
+                    business = item,
+                    selectItem = {},
+                    modifier = Modifier.animateItemPlacement())
+            }
         )
     }
 }
