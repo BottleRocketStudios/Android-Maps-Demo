@@ -6,7 +6,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
 import retrofit2.Response
-import java.io.IOException
 
 fun <T> Response<T>.toResult(): Result<T> = if (isSuccessful) Result.success(body()!!) else Result.failure(HttpException(this))
 

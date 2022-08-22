@@ -18,15 +18,10 @@ class ResultRetrofitAdapterFactory : CallAdapter.Factory() {
         if (getRawType(returnType) != Call::class.java || returnType !is ParameterizedType) {
             return null
         }
-        val upperBound = getParameterUpperBound(FIRST_INDEX, returnType)
+        val responseType = getParameterUpperBound(FIRST_INDEX, returnType)
 
-        return if (upperBound is ParameterizedType && upperBound.rawType == Result::class.java) {
-            object : CallAdapter<Any, Call<Result<*>>> {
-                override fun responseType(): Type = getParameterUpperBound(FIRST_INDEX, upperBound)
-
-                override fun adapt(call: Call<Any>): Call<Result<*>> =
-                    ResultCall(call) as Call<Result<*>>
-            }
+        return if (responseType is ParameterizedType && responseType.rawType == Result::class.java) {
+            ResultCallAdapter<Any>(getParameterUpperBound(FIRST_INDEX, responseType))
         } else {
             null
         }

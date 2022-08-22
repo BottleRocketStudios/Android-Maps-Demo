@@ -1,7 +1,6 @@
 package com.bottlerocketstudios.compose.map
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -69,18 +68,18 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             cameraPositionState = googleCameraPositionState
         )
 
-            Button(onClick = {
-                mapUiSettings = mapUiSettings.copy(
-                    mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
-                )
-            }) {
-                Text(text = stringResource(R.string.toggle_map_toolbar))
-            }
-
-            AnimatedVisibility(googleMapScreenState.businessList.value.isNotEmpty()) {
-                YelpBusinessList(businessList = googleMapScreenState.businessList.value)
-            }
+        Button(onClick = {
+            mapUiSettings = mapUiSettings.copy(
+                mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
+            )
+        }) {
+            Text(text = stringResource(R.string.toggle_map_toolbar))
         }
+
+        AnimatedVisibility(googleMapScreenState.businessList.value.isNotEmpty()) {
+            YelpBusinessList(businessList = googleMapScreenState.businessList.value)
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -98,12 +97,14 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
             .fillMaxWidth()
             .weight(1f)
     ) {
-        items(items = businessList,
+        items(
+            items = businessList,
             itemContent = { item ->
                 YelpCardLayout(
                     business = item,
                     selectItem = {},
-                    modifier = Modifier.animateItemPlacement())
+                    modifier = Modifier.animateItemPlacement()
+                )
             }
         )
     }

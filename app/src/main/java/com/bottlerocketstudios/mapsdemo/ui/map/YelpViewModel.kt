@@ -33,11 +33,10 @@ class YelpViewModel : BaseViewModel() {
                     _yelpBusinessState.value = businessList
                 }
                 .onFailure { throwable ->
-                    when(throwable) {
+                    when (throwable) {
                         is HttpException -> { }
                         is IOException -> { }
                         else -> {
-
                         }
                     }
                     _yelpBusinessState.value = emptyList()

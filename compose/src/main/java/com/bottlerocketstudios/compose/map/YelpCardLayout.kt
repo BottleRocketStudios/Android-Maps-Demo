@@ -46,9 +46,9 @@ fun YelpCardLayout(business: Business, modifier: Modifier, selectItem: (business
                     bottom = Dimens.grid_1
                 )
         ) {
-            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = modifier.height(100.dp).width(100.dp).background(Color.Black) )
+            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = modifier.height(100.dp).width(100.dp).background(Color.Black))
 
-            BusinessDescriptionComponent(business = business, modifier = modifier )
+            BusinessDescriptionComponent(business = business, modifier = modifier)
         }
     }
 }
@@ -84,7 +84,7 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
 @Composable
 fun YelpCardPreview() {
     Preview {
-        YelpCardLayout(business = yelpTestCard, selectItem ={}, modifier = Modifier)
+        YelpCardLayout(business = yelpTestCard, selectItem = {}, modifier = Modifier)
     }
 }
 
