@@ -8,73 +8,28 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
-class ResultCall<T>(val delegate: Call<T>) :
-    Call<Result<T>> {
+fun <T> Response<T>.toResult(): Result<T> = if (isSuccessful) Result.success(body()!!) else Result.failure(HttpException(this))
 
+class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
     override fun enqueue(callback: Callback<Result<T>>) {
         delegate.enqueue(
             object : Callback<T> {
                 override fun onResponse(call: Call<T>, response: Response<T>) {
-                    if (response.isSuccessful) {
-                        callback.onResponse(
-                            this@ResultCall,
-                            Response.success(
-                                response.code(),
-                                Result.success(response.body()!!)
-                            )
-                        )
-                    } else {
-                        // HTTP Error codes will be here
-                        callback.onResponse(
-                            this@ResultCall,
-                            Response.success(
-                                Result.failure(
-                                    HttpException(response)
-                                )
-                            )
-                        )
-                    }
+                    callback.onResponse(this@ResultCall, Response.success(response.code(), response.toResult()))
                 }
 
                 override fun onFailure(call: Call<T>, throwable: Throwable) {
-                    val errorMessage = when (throwable) {
-                        is IOException -> throwable.message
-                        else -> throwable.localizedMessage
-                    }
-                    callback.onResponse(
-                        this@ResultCall,
-                        Response.success(Result.failure(RuntimeException(errorMessage, throwable)))
-                    )
+                    callback.onResponse(this@ResultCall, Response.success(Result.failure(throwable)))
                 }
             }
         )
     }
 
-    override fun isExecuted(): Boolean {
-        return delegate.isExecuted
-    }
-
-    override fun execute(): Response<Result<T>> {
-        return Response.success(Result.success(delegate.execute().body()!!))
-    }
-
-    override fun cancel() {
-        delegate.cancel()
-    }
-
-    override fun isCanceled(): Boolean {
-        return delegate.isCanceled
-    }
-
-    override fun clone(): Call<Result<T>> {
-        return ResultCall(delegate.clone())
-    }
-
-    override fun request(): Request {
-        return delegate.request()
-    }
-
-    override fun timeout(): Timeout {
-        return delegate.timeout()
-    }
+    override fun cancel() = delegate.cancel()
+    override fun clone(): Call<Result<T>> = ResultCall(delegate.clone())
+    override fun execute(): Response<Result<T>> = Response.success(delegate.execute().toResult())
+    override fun isExecuted(): Boolean = delegate.isExecuted
+    override fun isCanceled(): Boolean = delegate.isCanceled
+    override fun request(): Request = delegate.request()
+    override fun timeout(): Timeout = delegate.timeout()
 }
