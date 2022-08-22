@@ -6,7 +6,7 @@ import okhttp3.Response
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class YelpApiKeyInterceptor() : Interceptor, KoinComponent {
+internal class YelpApiKeyInterceptor : Interceptor, KoinComponent {
     // DI
     private val buildConfigProvider: BuildConfigProvider by inject()
 

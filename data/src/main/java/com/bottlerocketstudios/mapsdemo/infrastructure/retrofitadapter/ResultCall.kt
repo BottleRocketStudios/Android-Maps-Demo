@@ -78,4 +78,3 @@ class ResultCall<T>(val delegate: Call<T>) :
         return delegate.timeout()
     }
 }
-

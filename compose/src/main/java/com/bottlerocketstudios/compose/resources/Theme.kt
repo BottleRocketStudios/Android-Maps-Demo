@@ -11,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
 
-
 private const val SMALL_SCREEN_WIDTH_DP = 360
 private val LocalAppDimens = staticCompositionLocalOf {
     sw360Dimensions
@@ -63,7 +62,7 @@ fun AndroidMapsDemoTheme(
         LightColorPalette
     }
     val configuration = LocalConfiguration.current
-    val dimensions = if(configuration.screenWidthDp <= SMALL_SCREEN_WIDTH_DP ) smallDimensions else sw360Dimensions
+    val dimensions = if (configuration.screenWidthDp <= SMALL_SCREEN_WIDTH_DP) smallDimensions else sw360Dimensions
 
     ProvideDimens(dimensions = dimensions) {
         ProvideColors(colors = colors) {
@@ -76,7 +75,6 @@ fun AndroidMapsDemoTheme(
             }
         }
     }
-
 }
 @Composable
 fun ProvideDimens(

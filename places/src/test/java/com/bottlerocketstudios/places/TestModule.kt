@@ -1,6 +1,5 @@
 package com.bottlerocketstudios.places
 
-import com.bottlerocketstudios.mapsdemo.domain.di.BuildConfigProvider
 import com.bottlerocketstudios.places.mocks.testContext
 import com.google.android.libraries.places.api.Places
 import org.koin.dsl.module

@@ -11,14 +11,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
-class YelpViewModel: BaseViewModel() {
+class YelpViewModel : BaseViewModel() {
     // DI
     private val yelpRepository: YelpRepository by inject()
 
     // UI
     private val _yelpBusinessState = MutableStateFlow<List<Business>>(emptyList())
     val yelpBusinessState: StateFlow<List<Business>> = _yelpBusinessState
-    val dallasLatLng: LatLng = LatLng(32.7767,-96.7970)
+    val dallasLatLng: LatLng = LatLng(32.7767, -96.7970)
 
     init {
         getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude))
@@ -27,7 +27,7 @@ class YelpViewModel: BaseViewModel() {
     fun getYelpBusinesses(yelpLatLngSearch: YelpLatLngSearch) {
         viewModelScope.launch(dispatcherProvider.IO) {
             yelpRepository.getBusinessesByLatLng(yelpLatLngSearch)
-                .onSuccess {businessList ->
+                .onSuccess { businessList ->
                     _yelpBusinessState.value = businessList
                 }
                 .onFailure {

@@ -15,8 +15,8 @@ object DataModule {
     val module = module {
         single<Clock> { Clock.systemDefaultZone() }
         single<Moshi> { Moshi.Builder().add(DateTimeAdapter(clock = get())).add(ProtectedPropertyAdapter()).build() }
-        single<YelpRepository>{ YelpRepositoryImplementation() }
-        single<DispatcherProvider>{ DispatcherProviderImplementation() }
+        single<YelpRepository> { YelpRepositoryImplementation() }
+        single<DispatcherProvider> { DispatcherProviderImplementation() }
     }
 }
 
@@ -25,4 +25,3 @@ object NetworkModule {
         single { YelpServiceFactory().produce() }
     }
 }
-

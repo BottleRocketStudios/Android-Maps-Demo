@@ -26,7 +26,6 @@ import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
@@ -53,32 +52,31 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
     val googleCameraPositionState: CameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(googleMapScreenState.dallasLatLng, CITY_ZOOM_LEVEL)
     }
-        Column(modifier = Modifier
+    Column(
+        modifier = Modifier
             .fillMaxSize()
             .background(Color.DarkGray)
-        ) {
-            GoogleMap(
-                properties = mapProperties,
-                uiSettings = mapUiSettings,
-                modifier = Modifier
-                    .height(400.dp)
-                    .fillMaxWidth(),
-                cameraPositionState = googleCameraPositionState
-            )
+    ) {
+        GoogleMap(
+            properties = mapProperties,
+            uiSettings = mapUiSettings,
+            modifier = Modifier
+                .height(400.dp)
+                .fillMaxWidth(),
+            cameraPositionState = googleCameraPositionState
+        )
 
-            if(googleMapScreenState.businessList.value.isNotEmpty()) {
-                YelpBusinessList(businessList = googleMapScreenState.businessList.value)
-            }
-            Button(onClick = {
-                mapUiSettings = mapUiSettings.copy(
-                    mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
-                )
-            }) {
-                Text(text = stringResource(R.string.toggle_map_toolbar))
-            }
-
+        if (googleMapScreenState.businessList.value.isNotEmpty()) {
+            YelpBusinessList(businessList = googleMapScreenState.businessList.value)
         }
-
+        Button(onClick = {
+            mapUiSettings = mapUiSettings.copy(
+                mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
+            )
+        }) {
+            Text(text = stringResource(R.string.toggle_map_toolbar))
+        }
+    }
 }
 
 @Composable
@@ -94,8 +92,10 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
             .fillMaxWidth()
             .weight(1f)
     ) {
-        items(items = businessList,
-            itemContent = {item -> YelpCardLayout(business = item, selectItem = {}) })
+        items(
+            items = businessList,
+            itemContent = { item -> YelpCardLayout(business = item, selectItem = {}) }
+        )
     }
 }
 
@@ -111,6 +111,6 @@ fun GoogleMapPreview() {
 @Composable
 fun YelpBusinessListPreview() {
     Preview {
-        //YelpBusinessList(businessList = listOf(yelpTestCard))
+        // YelpBusinessList(businessList = listOf(yelpTestCard))
     }
 }

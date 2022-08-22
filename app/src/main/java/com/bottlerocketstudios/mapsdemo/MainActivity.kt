@@ -14,7 +14,7 @@ import com.bottlerocketstudios.mapsdemo.ui.theme.AndroidMapsDemoTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
-    private val yelpViewModel: YelpViewModel  by viewModel()
+    private val yelpViewModel: YelpViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

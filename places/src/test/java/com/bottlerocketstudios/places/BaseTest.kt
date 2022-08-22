@@ -10,7 +10,7 @@ open class BaseTest {
     fun plantTimber() {
         Timber.plant(SystemOutPrintlnTree())
     }
-    
+
     inline fun <reified T> inlineKoinSingle(crossinline block: org.koin.core.scope.Scope.() -> T) {
         loadKoinModules(module { single { block() } })
     }

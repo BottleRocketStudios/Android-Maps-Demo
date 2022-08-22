@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -45,11 +44,11 @@ fun YelpCardLayout(business: Business, selectItem: (business: Business) -> Unit)
                     bottom = Dimens.grid_1
                 )
         ) {
-            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = Modifier.height(100.dp).width(100.dp).background(Color.Black) )
+            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = Modifier.height(100.dp).width(100.dp).background(Color.Black))
 
-            BusinessDescriptionComponent(business = business, modifier = Modifier )
+            BusinessDescriptionComponent(business = business, modifier = Modifier)
         }
-    } 
+    }
 }
 
 @Composable
@@ -65,8 +64,10 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
                 )
         )
         Text(
-            text = stringResource(id = R.string.latitude_longitude_format,
-                business.coordinates.latitude.toString(), business.coordinates.longitude.toString()),
+            text = stringResource(
+                id = R.string.latitude_longitude_format,
+                business.coordinates.latitude.toString(), business.coordinates.longitude.toString()
+            ),
             style = typography.body1,
             modifier = Modifier
                 .padding(
@@ -81,7 +82,7 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
 @Composable
 fun YelpCardPreview() {
     Preview {
-        YelpCardLayout(business = yelpTestCard, selectItem ={})
+        YelpCardLayout(business = yelpTestCard, selectItem = {})
     }
 }
 

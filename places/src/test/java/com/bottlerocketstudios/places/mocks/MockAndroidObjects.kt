@@ -30,4 +30,3 @@ val testLocationBias: LocationBias = RectangularBounds.newInstance(
     LatLng(37.7576948, -122.4727051), // SW lat, lng
     LatLng(37.808300, -122.391338) // NE lat, lng
 )
-

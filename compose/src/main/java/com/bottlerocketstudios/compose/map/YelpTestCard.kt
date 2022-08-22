@@ -9,4 +9,3 @@ val yelpTestCard = Business(
     imageUrl = "https://s3-media0.fl.yelpcdn.com/bphoto/9aPP6Dp7IDXh6cjLlp33cg/ls.jpg",
     Coordinates(32.7767, -96.7970),
 )
-

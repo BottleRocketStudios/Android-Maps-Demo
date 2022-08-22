@@ -8,13 +8,12 @@ import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-internal class YelpRepositoryImplementation: YelpRepository, KoinComponent {
+internal class YelpRepositoryImplementation : YelpRepository, KoinComponent {
     // DI
     private val yelpService: YelpService by inject()
 
     override suspend fun getBusinessesByLatLng(yelpLatLngSearch: YelpLatLngSearch): Result<List<Business>> =
-        yelpService.getBusinessesByLatLng(yelpLatLngSearch.latitude,yelpLatLngSearch.longitude).map { yelpSearch ->
+        yelpService.getBusinessesByLatLng(yelpLatLngSearch.latitude, yelpLatLngSearch.longitude).map { yelpSearch ->
             yelpSearch.businesses.map { businessDTO -> businessDTO.convertToBusiness() }
         }
-
 }

@@ -3,23 +3,18 @@ package com.bottlerocketstudios.places.implementations
 import com.bottlerocketstudios.mapsdemo.domain.models.PlaceSearchEventIdle
 import com.bottlerocketstudios.mapsdemo.domain.models.PlacesSearchEvent
 import com.bottlerocketstudios.mapsdemo.domain.repositories.PlacesRepository
-import com.google.android.libraries.places.api.net.PlacesClient
-import org.koin.core.component.inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.KoinComponent
 
-
-
-internal class PlacesRepositoryImplementation() : PlacesRepository, KoinComponent {
-    private val placesClient: PlacesClient by inject()
+internal class PlacesRepositoryImplementation : PlacesRepository, KoinComponent {
+    // private val placesClient: PlacesClient by inject()
 
     private val _placesAutocompletePredictionEvents = MutableStateFlow<PlacesSearchEvent>(PlaceSearchEventIdle)
     private val _placeDetails = MutableStateFlow<PlacesSearchEvent>(PlaceSearchEventIdle)
 
     override val placesEvents: StateFlow<PlacesSearchEvent> = _placesAutocompletePredictionEvents
     override val placeDetails: StateFlow<PlacesSearchEvent> = _placeDetails
-
 
     // To be used later when we implement places
     /*override suspend fun getPlaces(placesRequest: PlacesRequest) {

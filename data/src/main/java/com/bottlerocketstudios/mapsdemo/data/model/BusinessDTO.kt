@@ -10,7 +10,7 @@ data class BusinessDTO(
     val id: String,
     @Json(name = "name")
     val businessName: String,
-    @Json(name = "image_url" )
+    @Json(name = "image_url")
     val imageUrl: String,
     val coordinates: Coordinates
 )

@@ -10,11 +10,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-abstract class ServiceFactory: KoinComponent {
+abstract class ServiceFactory : KoinComponent {
     // DI
     private val moshi: Moshi by inject()
 
-    //Configurable URL
+    // Configurable URL
     abstract val baseUrl: String
 
     abstract val headerInterceptor: Interceptor
@@ -36,5 +36,4 @@ abstract class ServiceFactory: KoinComponent {
             .addInterceptor(headerInterceptor)
             .build()
     }
-
 }

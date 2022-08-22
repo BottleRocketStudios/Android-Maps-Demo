@@ -776,6 +776,7 @@ style:
     allowedNames: '(_|ignored|expected|serialVersionUID)'
     ignoreAnnotated:
       - 'Preview'
+      - 'JsonClass'
       - 'PreviewAllDevices' # https://detekt.github.io/detekt/compose.html#unusedprivatemember
   UseAnyOrNoneInsteadOfFind:
     active: false

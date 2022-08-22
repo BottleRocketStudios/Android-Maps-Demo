@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-class ResultRetrofitAdapterFactory: CallAdapter.Factory() {
+class ResultRetrofitAdapterFactory : CallAdapter.Factory() {
 
     private companion object {
         const val FIRST_INDEX = 0
@@ -15,7 +15,7 @@ class ResultRetrofitAdapterFactory: CallAdapter.Factory() {
     // Handle the return type if it is a Kotlin.Result or null if it cannot be handled by the factory.
 
     override fun get(returnType: Type, annotations: Array<out Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
-        if(getRawType(returnType) != Call::class.java || returnType !is ParameterizedType) {
+        if (getRawType(returnType) != Call::class.java || returnType !is ParameterizedType) {
             return null
         }
         val upperBound = getParameterUpperBound(FIRST_INDEX, returnType)
@@ -31,5 +31,4 @@ class ResultRetrofitAdapterFactory: CallAdapter.Factory() {
             null
         }
     }
-
 }

@@ -50,8 +50,8 @@ val Dimens: Dimensions
 
 object AndroidMapsDemoTheme {
     val dimens: Dimensions
-    @Composable
-    get() = LocalAppDimens.current
+        @Composable
+        get() = LocalAppDimens.current
 }
 
 @Composable
@@ -65,7 +65,7 @@ fun AndroidMapsDemoTheme(
         LightColorPalette
     }
     val configuration = LocalConfiguration.current
-    val dimensions = if(configuration.screenWidthDp <= SMALL_SCREEN_WIDTH_DP ) smallDimensions else sw360Dimensions
+    val dimensions = if (configuration.screenWidthDp <= SMALL_SCREEN_WIDTH_DP) smallDimensions else sw360Dimensions
 
     ProvideDimens(dimensions = dimensions) {
         ProvideColors(colors = colors) {
@@ -78,7 +78,6 @@ fun AndroidMapsDemoTheme(
             }
         }
     }
-
 }
 @Composable
 fun ProvideDimens(
@@ -97,6 +96,3 @@ fun ProvideColors(
     val colorPalette = remember { colors }
     CompositionLocalProvider(LocalAppColors provides colorPalette, content = content)
 }
-
-
-

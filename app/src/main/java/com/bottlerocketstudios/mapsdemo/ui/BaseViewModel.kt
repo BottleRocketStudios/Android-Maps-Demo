@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-abstract class BaseViewModel: ViewModel(), KoinComponent {
+abstract class BaseViewModel : ViewModel(), KoinComponent {
     // DI
     protected val dispatcherProvider: DispatcherProvider by inject()
 
@@ -23,5 +23,4 @@ abstract class BaseViewModel: ViewModel(), KoinComponent {
      */
     suspend fun runOnMain(block: suspend CoroutineScope.() -> Unit) =
         withContext(dispatcherProvider.Main, block)
-
 }
