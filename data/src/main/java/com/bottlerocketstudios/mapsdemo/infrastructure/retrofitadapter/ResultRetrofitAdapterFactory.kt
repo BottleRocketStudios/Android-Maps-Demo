@@ -22,7 +22,7 @@ class ResultRetrofitAdapterFactory : CallAdapter.Factory() {
 
         return if (upperBound is ParameterizedType && upperBound.rawType == Result::class.java) {
             object : CallAdapter<Any, Call<Result<*>>> {
-                override fun responseType(): Type = getParameterUpperBound(0, upperBound)
+                override fun responseType(): Type = getParameterUpperBound(FIRST_INDEX, upperBound)
 
                 override fun adapt(call: Call<Any>): Call<Result<*>> =
                     ResultCall(call) as Call<Result<*>>

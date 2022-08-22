@@ -80,15 +80,6 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             AnimatedVisibility(googleMapScreenState.businessList.value.isNotEmpty()) {
                 YelpBusinessList(businessList = googleMapScreenState.businessList.value)
             }
-
-
-        }
-        Button(onClick = {
-            mapUiSettings = mapUiSettings.copy(
-                mapToolbarEnabled = !mapUiSettings.mapToolbarEnabled
-            )
-        }) {
-            Text(text = stringResource(R.string.toggle_map_toolbar))
         }
 }
 

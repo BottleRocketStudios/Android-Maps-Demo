@@ -10,13 +10,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
+import retrofit2.HttpException
+import java.io.IOException
 
 class YelpViewModel : BaseViewModel() {
     // DI
     private val yelpRepository: YelpRepository by inject()
 
     // UI
-    private val _yelpBusinessState = MutableStateFlow<List<Business>>(emptyList())
+    private val _yelpBusinessState: MutableStateFlow<List<Business>> = MutableStateFlow(emptyList())
     val yelpBusinessState: StateFlow<List<Business>> = _yelpBusinessState
     val dallasLatLng: LatLng = LatLng(32.7767, -96.7970)
 
@@ -30,7 +32,14 @@ class YelpViewModel : BaseViewModel() {
                 .onSuccess { businessList ->
                     _yelpBusinessState.value = businessList
                 }
-                .onFailure {
+                .onFailure { throwable ->
+                    when(throwable) {
+                        is HttpException -> { }
+                        is IOException -> { }
+                        else -> {
+
+                        }
+                    }
                     _yelpBusinessState.value = emptyList()
                 }
         }
