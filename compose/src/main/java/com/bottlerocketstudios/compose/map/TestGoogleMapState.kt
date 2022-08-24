@@ -9,5 +9,7 @@ val googleMapScreenStateTest = GoogleMapScreenState(
     mutableStateOf(listOf(yelpTestCard)),
     dallasLatLng = LatLng(32.7767, -96.7970),
     mutableStateOf(UserFacingError.NoError),
-    resetError = {}
+    resetError = {},
+    retrySearch = {},
+    googleMarkers = mutableStateOf(emptyList())
 )

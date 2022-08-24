@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
+import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
 import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
 import com.bottlerocketstudios.mapsdemo.ui.BaseViewModel
 import com.google.android.gms.maps.model.LatLng
@@ -17,6 +18,7 @@ class YelpViewModel : BaseViewModel() {
 
     // UI
     val yelpBusinessState: MutableStateFlow<List<Business>> = MutableStateFlow(emptyList())
+    val googleMapsMarkersLatLng: MutableStateFlow<List<YelpMarker>> = MutableStateFlow(emptyList())
     val dallasLatLng: LatLng = LatLng(LATITUDE, LONGITUDE)
 
     private companion object {
@@ -33,10 +35,20 @@ class YelpViewModel : BaseViewModel() {
             yelpRepository.getBusinessesByLatLng(yelpLatLngSearch)
                 .onSuccess { businessList ->
                     yelpBusinessState.value = businessList
+                    googleMapsMarkersLatLng.value = businessList.map { business ->
+                        YelpMarker(
+                            latitude = business.coordinates.latitude,
+                            longitude = business.coordinates.longitude,
+                            businessName = business.businessName)
+                    }
+
                 }.handleFailure()
         }
     }
     fun resetError() {
         errorStateFlow.value = UserFacingError.NoError
+    }
+    fun retrySearch() {
+        getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude))
     }
 }
