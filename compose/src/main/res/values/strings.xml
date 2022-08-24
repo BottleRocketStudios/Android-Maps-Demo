@@ -2,4 +2,8 @@
 <resources>
     <string name="toggle_map_toolbar">Toggle Map Toolbar</string>
     <string name="latitude_longitude_format">Latitude:%1$s\nLongitude: %2$s</string>
+    <string name="test_general_error_title">General Error</string>
+    <string name="test_general_error_description">Something went wrong</string>
+    <string name="test_api_error_title">Error</string>
+    <string name="test_api_error_description">Something went wrong accessing services</string>
 </resources>

@@ -1,6 +1,13 @@
 package com.bottlerocketstudios.mapsdemo.domain.models
-
 sealed class UserFacingError {
-    data class GeneralError(val title: String = "General Error", val description: String = "Something went wrong."): UserFacingError()
-    data class NetworkError(val title: String = "Network Error", val description: String = "Unable to access the internet"): UserFacingError()
+    data class GeneralError(
+        val title: Int,
+        val description: Int
+    ) : UserFacingError()
+    data class ApiError(
+        val code: Int = 0,
+        val title: Int,
+        val description: Int
+    ) : UserFacingError()
+    object NoError : UserFacingError()
 }

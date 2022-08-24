@@ -5,34 +5,37 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.DialogProperties
+import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.utils.Preview
 
 @Composable
-fun CustomAlertDialog(modifier: Modifier, title: String, message: String) {
+fun CustomAlertDialog(modifier: Modifier, title: Int, message: Int, onDismiss: () -> Unit) {
     MaterialTheme {
         Column {
-            val dialogVisibility = remember {
-                mutableStateOf(value = true)
-            }
 
             AlertDialog(
-                onDismissRequest = {
-                    dialogVisibility.value = false
-                },
+                onDismissRequest = onDismiss,
                 title = {
-                    Text(text = title)
+                    Text(text = stringResource(id = title))
                 }, text = {
-                    Text(text = message)
-                },
+                Text(text = stringResource(id = message))
+            },
                 confirmButton = {
-                    CustomAlertDialogConfirmButton(dialogVisibility = dialogVisibility)
-                }
+                    CustomAlertDialogConfirmButton(onDismiss = onDismiss)
+                },
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                )
             )
         }
     }
@@ -44,17 +47,17 @@ fun PreviewCustomAlertDialog() {
     Preview {
         CustomAlertDialog(
             modifier = Modifier,
-            title = "Error",
-            message = "Unable to access the internet"
-        )
+            title = R.string.test_general_error_title,
+            message = R.string.test_api_error_description,
+        onDismiss = {})
     }
 }
 
 @Composable
-fun CustomAlertDialogConfirmButton(dialogVisibility: MutableState<Boolean>) {
-    Button(onClick = { dialogVisibility.value = false }
+fun CustomAlertDialogConfirmButton(onDismiss: () -> Unit) {
+    Button(
+        onClick = onDismiss
     ) {
         Text("OK")
     }
 }
-

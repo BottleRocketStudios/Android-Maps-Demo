@@ -25,9 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bottlerocketstudios.compose.R
+import com.bottlerocketstudios.compose.alertdialog.CustomAlertDialog
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
+import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
@@ -42,7 +44,7 @@ private const val CITY_ZOOM_LEVEL = 11f
 
 @Composable
 fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: Boolean = false, modifier: Modifier) {
-    var mapProperties by remember {
+    val mapProperties by remember {
         mutableStateOf(
             MapProperties(maxZoomPreference = MAX_ZOOM_LEVEL, minZoomPreference = MIN_ZOOM_LEVEL)
         )
@@ -54,6 +56,11 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
     val googleCameraPositionState: CameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(googleMapScreenState.dallasLatLng, CITY_ZOOM_LEVEL)
     }
+
+    val dialogVisibility = remember {
+        mutableStateOf(value = false)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,6 +74,19 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
                 .fillMaxWidth(),
             cameraPositionState = googleCameraPositionState
         )
+
+        if(googleMapScreenState.yelpError.value != UserFacingError.NoError) {
+            dialogVisibility.value = true
+        }
+
+        AnimatedVisibility(dialogVisibility.value) {
+
+            when (val error = googleMapScreenState.yelpError.value) {
+                is UserFacingError.ApiError -> CustomAlertDialog(modifier = Modifier, title = error.title, message = error.description, onDismiss = { dialogVisibility.value = false})
+                is UserFacingError.GeneralError -> CustomAlertDialog(modifier = Modifier, title = error.title, message = error.description, onDismiss = { dialogVisibility.value = false})
+                else -> { dialogVisibility.value = false}
+            }
+        }
 
         Button(onClick = {
             mapUiSettings = mapUiSettings.copy(

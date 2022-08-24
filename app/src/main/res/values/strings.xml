@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Android-Maps-Demo</string>
     <string name="toogle_map_toolbar">Toggle Map Toolbar</string>
+    <string name="general_error_title">General Error</string>
+    <string name="general_error_description">Something went wrong</string>
+    <string name="api_error_title">Error</string>
+    <string name="api_error_description">Something went wrong accessing services</string>
 </resources>

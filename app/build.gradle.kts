@@ -151,9 +151,6 @@ dependencies {
     // Koin DI
     koinDependencies()
 
-    // Retrofit
-    retrofitDependencies()
-
     // AndroidX
     composeDependencies()
     accompanistDependencies()
