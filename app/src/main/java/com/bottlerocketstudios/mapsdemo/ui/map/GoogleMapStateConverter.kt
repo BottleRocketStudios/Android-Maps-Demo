@@ -9,5 +9,6 @@ import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 fun YelpViewModel.toState() = GoogleMapScreenState(
     businessList = yelpBusinessState.collectAsState(emptyList()),
     dallasLatLng = dallasLatLng,
-    yelpError = errorStateFlow.collectAsState(UserFacingError.NoError)
+    yelpError = errorStateFlow.collectAsState(UserFacingError.NoError),
+    resetError = ::resetError
 )

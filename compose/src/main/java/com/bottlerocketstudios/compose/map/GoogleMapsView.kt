@@ -61,6 +61,8 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         mutableStateOf(value = false)
     }
 
+    dialogVisibility.value = googleMapScreenState.yelpError.value != UserFacingError.NoError
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,22 +71,32 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         GoogleMap(
             properties = mapProperties,
             uiSettings = mapUiSettings,
-            modifier = Modifier
+            modifier = if(dialogVisibility.value) Modifier.fillMaxSize() else Modifier
                 .height(400.dp)
                 .fillMaxWidth(),
             cameraPositionState = googleCameraPositionState
         )
 
-        if(googleMapScreenState.yelpError.value != UserFacingError.NoError) {
-            dialogVisibility.value = true
-        }
-
         AnimatedVisibility(dialogVisibility.value) {
-
             when (val error = googleMapScreenState.yelpError.value) {
-                is UserFacingError.ApiError -> CustomAlertDialog(modifier = Modifier, title = error.title, message = error.description, onDismiss = { dialogVisibility.value = false})
-                is UserFacingError.GeneralError -> CustomAlertDialog(modifier = Modifier, title = error.title, message = error.description, onDismiss = { dialogVisibility.value = false})
-                else -> { dialogVisibility.value = false}
+                is UserFacingError.ApiError -> CustomAlertDialog(
+                    modifier = Modifier,
+                    title = error.title,
+                    message = error.description,
+                    onDismiss = {
+                        googleMapScreenState.resetError()
+                    })
+                is UserFacingError.GeneralError -> CustomAlertDialog(
+                    modifier = Modifier,
+                    title = error.title,
+                    message = error.description,
+                    onDismiss = {
+
+                        googleMapScreenState.resetError()
+                    })
+                else -> {
+                    googleMapScreenState.resetError()
+                }
             }
         }
 
