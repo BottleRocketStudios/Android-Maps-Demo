@@ -40,7 +40,6 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
                 }
                 else -> {
                     errorStateFlow.value = UserFacingError.GeneralError(R.string.general_error_title, description = R.string.general_error_description)
-
                 }
             }
         }
@@ -55,14 +54,13 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
                     Timber.d("${throwable.code}  ${throwable.responseBody}")
                 }
                 is IOException -> {
-                   Timber.d("${throwable.message}")
+                    Timber.d("${throwable.message}")
                 }
                 else -> {
-                   Timber.d("${throwable.message}")
+                    Timber.d("${throwable.message}")
                 }
             }
         }
         return this
     }
-
 }

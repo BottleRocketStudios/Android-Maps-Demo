@@ -71,7 +71,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         GoogleMap(
             properties = mapProperties,
             uiSettings = mapUiSettings,
-            modifier = if(dialogVisibility.value) Modifier.fillMaxSize() else Modifier
+            modifier = if (dialogVisibility.value) Modifier.fillMaxSize() else Modifier
                 .height(400.dp)
                 .fillMaxWidth(),
             cameraPositionState = googleCameraPositionState
@@ -85,15 +85,16 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
                     message = error.description,
                     onDismiss = {
                         googleMapScreenState.resetError()
-                    })
+                    }
+                )
                 is UserFacingError.GeneralError -> CustomAlertDialog(
                     modifier = Modifier,
                     title = error.title,
                     message = error.description,
                     onDismiss = {
-
                         googleMapScreenState.resetError()
-                    })
+                    }
+                )
                 else -> {
                     googleMapScreenState.resetError()
                 }
@@ -147,13 +148,5 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
 fun GoogleMapPreview() {
     Preview {
         GoogleMapsView(modifier = Modifier.fillMaxSize(), googleMapScreenState = googleMapScreenStateTest)
-    }
-}
-
-@Preview
-@Composable
-fun YelpBusinessListPreview() {
-    Preview {
-        // YelpBusinessList(businessList = listOf(yelpTestCard))
     }
 }

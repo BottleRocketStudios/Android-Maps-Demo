@@ -34,7 +34,6 @@ class YelpViewModel : BaseViewModel() {
                 .onSuccess { businessList ->
                     yelpBusinessState.value = businessList
                 }.handleFailure()
-
         }
     }
     fun resetError() {

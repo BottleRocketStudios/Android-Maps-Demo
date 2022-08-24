@@ -45,7 +45,8 @@ fun PreviewCustomAlertDialog() {
             modifier = Modifier,
             title = R.string.test_general_error_title,
             message = R.string.test_api_error_description,
-        onDismiss = {})
+            onDismiss = {}
+        )
     }
 }
 

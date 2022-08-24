@@ -4,7 +4,4 @@ class ApiException(
     val code: Int,
     message: String,
     val responseBody: String,
-): RuntimeException(message) {
-
-
-}
+) : RuntimeException(message)
