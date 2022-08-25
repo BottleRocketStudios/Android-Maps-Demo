@@ -6,5 +6,5 @@ import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
 
 interface YelpRepository : Repository {
 
-    suspend fun getBusinessesByLatLng(yelpLatLngSearch: YelpLatLngSearch): Result<List<Business>>
+    suspend fun getBusinessesByLatLng(yelpLatLngSearch: YelpLatLngSearch, radius: Int?): Result<List<Business>>
 }

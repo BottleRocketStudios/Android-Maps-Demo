@@ -28,15 +28,19 @@ class YelpViewModel : BaseViewModel() {
         const val DEFAULT_LATITUDE = 32.7767
         const val DEFAULT_LONGITUDE = -96.7970
         const val SEARCH_DELAY = 300L
+        const val ZOOM_THRESHOLD = 13
+
+        // Yelp Search Radius are in meters. 40,000 meter is about 25 miles
+        const val MAX_SEARCH_RADIUS = 40000
     }
 
     init {
-        getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude))
+        getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude), MAX_SEARCH_RADIUS)
     }
 
-    private fun getYelpBusinesses(yelpLatLngSearch: YelpLatLngSearch) {
+    private fun getYelpBusinesses(yelpLatLngSearch: YelpLatLngSearch, radius: Int?) {
         viewModelScope.launch(dispatcherProvider.IO) {
-            yelpRepository.getBusinessesByLatLng(yelpLatLngSearch)
+            yelpRepository.getBusinessesByLatLng(yelpLatLngSearch, radius)
                 .onSuccess { businessList ->
                     yelpBusinessState.value = businessList
                     googleMapsMarkersLatLng.value = businessList.map { business ->
@@ -50,7 +54,7 @@ class YelpViewModel : BaseViewModel() {
         }
     }
 
-    fun getYelpBusinessesOnMapMove(yelpLatLngSearch: YelpLatLngSearch) {
+    fun getYelpBusinessesOnMapMove(yelpLatLngSearch: YelpLatLngSearch, zoomLevel: Float) {
         searchJob?.cancel()
 
         searchJob = viewModelScope.launch(dispatcherProvider.IO) {
@@ -58,7 +62,11 @@ class YelpViewModel : BaseViewModel() {
             // the search.
             delay(SEARCH_DELAY)
 
-            getYelpBusinesses(yelpLatLngSearch)
+            getYelpBusinesses(yelpLatLngSearch =yelpLatLngSearch, radius = if(zoomLevel > ZOOM_THRESHOLD) {
+                null
+            } else {
+                MAX_SEARCH_RADIUS
+            })
         }
     }
 
@@ -66,6 +74,6 @@ class YelpViewModel : BaseViewModel() {
         errorStateFlow.value = UserFacingError.NoError
     }
     fun retrySearch() {
-        getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude))
+        getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude), radius = null)
     }
 }

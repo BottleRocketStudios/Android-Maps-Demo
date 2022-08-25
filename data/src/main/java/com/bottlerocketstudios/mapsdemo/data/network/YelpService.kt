@@ -11,5 +11,6 @@ internal interface YelpService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("limit") limit: Int,
+        @Query("radius") radius: Int?,
     ): Result<YelpBusinessesDTO>
 }

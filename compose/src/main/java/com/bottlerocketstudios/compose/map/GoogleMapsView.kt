@@ -28,6 +28,7 @@ import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraMoveStartedReason
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -67,6 +68,10 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         mutableStateOf(value = false)
     }
 
+    val markerSelected = remember {
+        mutableStateOf(value = false)
+    }
+
     dialogVisibility.value = googleMapScreenState.yelpError.value != UserFacingError.NoError
     fullScreenMaps.value = googleMapScreenState.businessList.value.isEmpty()
 
@@ -93,12 +98,13 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
                 addMarkers(yelpMarkers = googleMapScreenState.googleMarkers.value)
             }
 
-            if(googleCameraPositionState.isMoving) {
+            if(googleCameraPositionState.isMoving &&
+                googleCameraPositionState.cameraMoveStartedReason.value == CameraMoveStartedReason.GESTURE.value) {
                 val search = YelpLatLngSearch(
                     latitude = googleCameraPositionState.position.target.latitude,
                     longitude = googleCameraPositionState.position.target.longitude
                 )
-                googleMapScreenState.onCameraMoveSearch(search)
+                googleMapScreenState.onCameraMoveSearch(search, googleCameraPositionState.position.zoom)
             }
         }
 
@@ -145,12 +151,12 @@ fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
     }
 }
 @Composable
-fun addMarkers(yelpMarkers: List<YelpMarker>) {
+fun addMarkers(yelpMarkers: List<YelpMarker>, ) {
     yelpMarkers.forEach { yelpMarker ->
         Marker(
             state = MarkerState(
                 position = LatLng(yelpMarker.latitude, yelpMarker.longitude)),
-            title = yelpMarker.businessName
+            title = yelpMarker.businessName,
         )
     }
 }

@@ -11,6 +11,6 @@ val googleMapScreenStateTest = GoogleMapScreenState(
     mutableStateOf(UserFacingError.NoError),
     resetError = {},
     retrySearch = {},
-    onCameraMoveSearch = {},
+    onCameraMoveSearch = { _, _ ->  },
     googleMarkers = mutableStateOf(emptyList())
 )
