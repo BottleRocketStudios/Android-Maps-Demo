@@ -12,5 +12,6 @@ fun YelpViewModel.toState() = GoogleMapScreenState(
     yelpError = errorStateFlow.collectAsState(UserFacingError.NoError),
     resetError = ::resetError,
     retrySearch = ::retrySearch,
+    onCameraMoveSearch = ::getYelpBusinessesOnMapMove,
     googleMarkers = googleMapsMarkersLatLng.collectAsState(emptyList())
 )

@@ -8,6 +8,8 @@ import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
 import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
 import com.bottlerocketstudios.mapsdemo.ui.BaseViewModel
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -19,11 +21,13 @@ class YelpViewModel : BaseViewModel() {
     // UI
     val yelpBusinessState: MutableStateFlow<List<Business>> = MutableStateFlow(emptyList())
     val googleMapsMarkersLatLng: MutableStateFlow<List<YelpMarker>> = MutableStateFlow(emptyList())
-    val dallasLatLng: LatLng = LatLng(LATITUDE, LONGITUDE)
+    val dallasLatLng: LatLng = LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
+    private var searchJob: Job? = null
 
     private companion object {
-        const val LATITUDE = 32.7767
-        const val LONGITUDE = -96.7970
+        const val DEFAULT_LATITUDE = 32.7767
+        const val DEFAULT_LONGITUDE = -96.7970
+        const val SEARCH_DELAY = 300L
     }
 
     init {
@@ -45,6 +49,19 @@ class YelpViewModel : BaseViewModel() {
                 }.handleFailure()
         }
     }
+
+    fun getYelpBusinessesOnMapMove(yelpLatLngSearch: YelpLatLngSearch) {
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch(dispatcherProvider.IO) {
+            // Delay is added to wait for the camera to stop moving before performing
+            // the search.
+            delay(SEARCH_DELAY)
+
+            getYelpBusinesses(yelpLatLngSearch)
+        }
+    }
+
     fun resetError() {
         errorStateFlow.value = UserFacingError.NoError
     }

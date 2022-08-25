@@ -7,8 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.map.YelpCardLayout
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
@@ -38,5 +43,13 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
                 )
             }
         )
+    }
+}
+
+
+@Composable
+fun ColumnScope.RetryButton(retry: () -> Unit, modifier: Modifier = Modifier.align(Alignment.CenterHorizontally)) {
+    Button(onClick = retry, modifier = modifier.padding(Dimens.grid_1)) {
+        Text(text = stringResource(id = R.string.retry))
     }
 }
