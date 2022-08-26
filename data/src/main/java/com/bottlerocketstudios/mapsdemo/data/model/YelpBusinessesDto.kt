@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class YelpBusinessesDTO(
+data class YelpBusinessesDto(
     @Json(name = "businesses")
-    val businesses: List<BusinessDTO>
-)
+    val businesses: List<BusinessDto>
+) : Dto

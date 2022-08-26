@@ -1,4 +1,7 @@
 package com.bottlerocketstudios.mapsdemo.domain.models
+
+import androidx.annotation.StringRes
+
 sealed class UserFacingError {
     data class GeneralError(
         val title: Int,
@@ -6,8 +9,8 @@ sealed class UserFacingError {
     ) : UserFacingError()
     data class ApiError(
         val code: Int = 0,
-        val title: Int,
-        val description: Int
+        @StringRes val title: Int,
+        @StringRes val description: Int
     ) : UserFacingError()
     object NoError : UserFacingError()
 }

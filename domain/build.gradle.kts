@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
     id(Config.ApplyPlugins.KSP)
+
 }
 
 java {
@@ -10,6 +11,7 @@ java {
 }
 
 dependencies {
+    implementation("androidx.annotation:annotation:1.3.0")
     // Kotlin/coroutines
     kotlinDependencies()
     coroutineDependencies()
