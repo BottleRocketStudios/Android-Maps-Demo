@@ -15,9 +15,10 @@ class DateTimeAdapter(private val clock: Clock) {
     fun fromJson(zonedDateTime: String): ZonedDateTime = run {
 
         try {
+            // TODO: To verify if this needed
             ZonedDateTime.parse(zonedDateTime)
         } catch (exception: DateTimeParseException) {
-            // TODO: To verify if this needed
+
             Timber.e(exception, "Failed to parse zonedDateTime")
             ZonedDateTime.now(clock)
         }
