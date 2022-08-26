@@ -17,7 +17,7 @@ class DateTimeAdapter(private val clock: Clock) {
         try {
             ZonedDateTime.parse(zonedDateTime)
         } catch (exception: DateTimeParseException) {
-            // TODO: Check if this is right
+            // TODO: To verify if this needed
             Timber.e(exception, "Failed to parse zonedDateTime")
             ZonedDateTime.now(clock)
         }
