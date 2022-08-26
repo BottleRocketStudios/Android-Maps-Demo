@@ -2,7 +2,7 @@ package com.bottlerocketstudios.mapsdemo.domain.models
 
 import androidx.annotation.StringRes
 
-sealed class UserFacingError {
+sealed class UserFacingError : DomainModel {
     data class GeneralError(
         @StringRes val title: Int,
         @StringRes val description: Int

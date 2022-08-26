@@ -18,6 +18,6 @@ Bottle Rocket Android Maps Guidelines
 4. Copy API Key and in local.properties add value `YELP_API_KEY` and add your API key there. 
 
 ## Change from AllProjects to DependencyResolutionManagement
-From Gradle version 6.8 and up, `allProjects` block is not required to list repositories. Instead list them in the project-level `settings.gradle.kts`. If attempt to add an allProjects block in your gradle file. Gradle will throw an error if dependencyResolutionManagement is present
+From Gradle version 6.8 and up, `allProjects` block is not required to list repositories. Instead list them in the project-level `settings.gradle.kts`. If you attempt to add an allProjects block in your gradle file, Gradle will throw an error if dependencyResolutionManagement is present
 in the project-level `settings.gradle.kts`. 
 

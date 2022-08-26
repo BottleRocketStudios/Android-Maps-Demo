@@ -165,10 +165,10 @@ private object Libraries {
     const val COMPOSE_MAPS_WIDGETS = "com.google.maps.android:maps-compose-widgets:$COMPOSE_MAPS_VERSION"
 
     // Places API
+    // https://github.com/googlemaps/android-places-ktx
     // https://developers.google.com/maps/documentation/places/android-sdk/ktx
     // https://developers.google.com/maps/documentation/places/android-sdk/config
     // https://developers.google.com/maps/documentation/places/android-sdk/releases
-
     const val PLACES_API_KTX = "com.google.maps.android:places-ktx:0.4.0"
     const val PLACES_API = "com.google.android.libraries.places:places:2.6.0"
 
@@ -399,8 +399,7 @@ fun DependencyHandler.composeMapsDependencies() {
     implementation((Libraries.COMPOSE_MAPS_WIDGETS))
     implementation((Libraries.GOOGLE_MAPS))
 }
-// https://developers.google.com/maps/documentation/places/android-sdk/ktx
-// https://github.com/googlemaps/android-places-ktx
+
 fun DependencyHandler.placesApiDependencies() {
     implementation(Libraries.PLACES_API)
     implementation(Libraries.PLACES_API_KTX)

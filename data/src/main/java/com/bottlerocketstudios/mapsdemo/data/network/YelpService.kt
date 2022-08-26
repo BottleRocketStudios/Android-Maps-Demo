@@ -9,6 +9,6 @@ internal interface YelpService {
     @GET(value = "businesses/search")
     suspend fun getBusinessesByLatLng(
         @Query("latitude") latitude: Double,
-        @Query("longitude") longitude: Double
+        @Query("longitude") longitude: Double,
     ): Result<YelpBusinessesDto>
 }

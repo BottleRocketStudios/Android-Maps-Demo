@@ -4,5 +4,5 @@ data class Business(
     val id: String,
     val businessName: String,
     val imageUrl: String,
-    val coordinates: Coordinates
-)
+    val coordinates: Coordinates,
+) : DomainModel
