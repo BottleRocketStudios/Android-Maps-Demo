@@ -18,4 +18,3 @@ internal class YelpRepositoryImplementation : YelpRepository, KoinComponent {
             yelpSearch.businesses.map { businessDTO -> businessDTO.convertToBusiness() }
         }.mapErrors()
 }
-

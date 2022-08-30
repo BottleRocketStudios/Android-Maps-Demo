@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -17,11 +21,31 @@ import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.map.YelpCardLayout
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
+import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
+fun ColumnScope.YelpBusinessList(businessList: List<Business>, selectedYelpMarker: YelpMarker, onClick: (Business) -> Unit) {
+
+    val noPosition = -1
+    val state = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    val itemPosition = remember {
+        mutableStateOf(value = -1)
+    }
+
+    coroutineScope.launch {
+        businessList.forEachIndexed { index, business ->
+            if (business.businessName == selectedYelpMarker.businessName) {
+                itemPosition.value = index
+            }
+        }
+    }
+
     LazyColumn(
+        state = state,
         verticalArrangement = Arrangement.spacedBy(Dimens.grid_1_5),
         modifier = Modifier
             .padding(
@@ -33,19 +57,25 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>) {
             .fillMaxWidth()
             .weight(1f)
     ) {
-        items(
-            items = businessList,
-            itemContent = { item ->
-                YelpCardLayout(
-                    business = item,
-                    selectItem = {},
-                    modifier = Modifier.animateItemPlacement()
-                )
+        items(businessList, key = { business -> business.id }) { item ->
+            YelpCardLayout(
+                business = item,
+                selectItem = { onClick(item) },
+                modifier = Modifier.animateItemPlacement(),
+                isSelected = selectedYelpMarker.businessName == item.businessName
+            )
+            if (item.businessName == selectedYelpMarker.businessName) {
+                Timber.d("${item.businessName} - ${selectedYelpMarker.businessName}")
             }
-        )
+            if (itemPosition.value > noPosition) {
+                coroutineScope.launch {
+                    state.animateScrollToItem(itemPosition.value)
+                    itemPosition.value = noPosition
+                }
+            }
+        }
     }
 }
-
 
 @Composable
 fun ColumnScope.RetryButton(retry: () -> Unit, modifier: Modifier = Modifier.align(Alignment.CenterHorizontally)) {

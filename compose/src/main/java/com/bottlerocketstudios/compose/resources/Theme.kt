@@ -44,6 +44,7 @@ private val LightColorPalette = lightColors(
 val Dimens: Dimensions
     @Composable
     get() = AndroidMapsDemoTheme.dimens
+// TODO: add colors to this file following dimens move light and dark palette to Colors
 
 object AndroidMapsDemoTheme {
     val dimens: Dimensions

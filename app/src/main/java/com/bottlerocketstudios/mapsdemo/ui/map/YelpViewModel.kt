@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
@@ -20,7 +21,16 @@ class YelpViewModel : BaseViewModel() {
 
     // UI
     val yelpBusinessState: MutableStateFlow<List<Business>> = MutableStateFlow(emptyList())
-    val googleMapsMarkersLatLng: MutableStateFlow<List<YelpMarker>> = MutableStateFlow(emptyList())
+    val googleMapsMarkersLatLng = yelpBusinessState.map { businessList ->
+        businessList.map { business ->
+            YelpMarker(
+                latitude = business.coordinates.latitude,
+                longitude = business.coordinates.longitude,
+                businessName = business.businessName
+            )
+        }
+    }
+    val selectedMarker: MutableStateFlow<YelpMarker> = MutableStateFlow(YelpMarker(latitude = 0.0, longitude = 0.0, businessName = ""))
     val dallasLatLng: LatLng = LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     private var searchJob: Job? = null
 
@@ -43,18 +53,12 @@ class YelpViewModel : BaseViewModel() {
             yelpRepository.getBusinessesByLatLng(yelpLatLngSearch, radius)
                 .onSuccess { businessList ->
                     yelpBusinessState.value = businessList
-                    googleMapsMarkersLatLng.value = businessList.map { business ->
-                        YelpMarker(
-                            latitude = business.coordinates.latitude,
-                            longitude = business.coordinates.longitude,
-                            businessName = business.businessName)
-                    }
-
                 }.handleFailure()
         }
     }
 
     fun getYelpBusinessesOnMapMove(yelpLatLngSearch: YelpLatLngSearch, zoomLevel: Float) {
+
         searchJob?.cancel()
 
         searchJob = viewModelScope.launch(dispatcherProvider.IO) {
@@ -62,11 +66,14 @@ class YelpViewModel : BaseViewModel() {
             // the search.
             delay(SEARCH_DELAY)
 
-            getYelpBusinesses(yelpLatLngSearch =yelpLatLngSearch, radius = if(zoomLevel > ZOOM_THRESHOLD) {
-                null
-            } else {
-                MAX_SEARCH_RADIUS
-            })
+            getYelpBusinesses(
+                yelpLatLngSearch = yelpLatLngSearch,
+                radius = if (zoomLevel > ZOOM_THRESHOLD) {
+                    null
+                } else {
+                    MAX_SEARCH_RADIUS
+                }
+            )
         }
     }
 
@@ -75,5 +82,9 @@ class YelpViewModel : BaseViewModel() {
     }
     fun retrySearch() {
         getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude), radius = null)
+    }
+
+    fun setSelectedMarker(yelpMarker: YelpMarker) {
+        selectedMarker.value = yelpMarker
     }
 }

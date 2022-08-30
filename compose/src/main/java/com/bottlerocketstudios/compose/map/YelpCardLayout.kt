@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -28,7 +29,8 @@ import com.bottlerocketstudios.mapsdemo.domain.models.Business
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun YelpCardLayout(business: Business, modifier: Modifier, selectItem: (business: Business) -> Unit) {
+fun YelpCardLayout(business: Business, modifier: Modifier, selectItem: (business: Business) -> Unit, isSelected: Boolean) {
+
     Card(
         elevation = Dimens.plane_3,
         modifier = modifier
@@ -37,6 +39,7 @@ fun YelpCardLayout(business: Business, modifier: Modifier, selectItem: (business
             }
             .background(color = Color.DarkGray)
     ) {
+
         Row(
             modifier = modifier
                 .padding(
@@ -46,9 +49,15 @@ fun YelpCardLayout(business: Business, modifier: Modifier, selectItem: (business
                     bottom = Dimens.grid_1
                 )
         ) {
-            AsyncImage(model = business.imageUrl, contentDescription = null, modifier = modifier.height(100.dp).width(100.dp).background(Color.Black))
+            AsyncImage(
+                model = business.imageUrl, contentDescription = null,
+                modifier = modifier
+                    .height(100.dp)
+                    .width(100.dp)
+                    .background(Color.Black)
+            )
 
-            BusinessDescriptionComponent(business = business, modifier = modifier)
+            BusinessDescriptionComponent(business = business, modifier = if (isSelected) modifier.background(Color.Green) else modifier.background(Color.White))
         }
     }
 }
@@ -75,7 +84,8 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
                 .padding(
                     top = Dimens.grid_0_5,
                     start = Dimens.grid_1
-                ).fillMaxWidth()
+                )
+                .fillMaxWidth()
         )
     }
 }
@@ -84,7 +94,7 @@ fun BusinessDescriptionComponent(business: Business, modifier: Modifier) {
 @Composable
 fun YelpCardPreview() {
     Preview {
-        YelpCardLayout(business = yelpTestCard, selectItem = {}, modifier = Modifier)
+        YelpCardLayout(business = yelpTestCard, selectItem = {}, modifier = Modifier, isSelected = false)
     }
 }
 
