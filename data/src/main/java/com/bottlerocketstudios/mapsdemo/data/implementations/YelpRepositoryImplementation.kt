@@ -1,5 +1,6 @@
 package com.bottlerocketstudios.mapsdemo.data.implementations
 
+import com.bottlerocketstudios.mapsdemo.data.model.YelpBusinessesDto
 import com.bottlerocketstudios.mapsdemo.data.network.YelpService
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
@@ -14,7 +15,8 @@ internal class YelpRepositoryImplementation : YelpRepository, KoinComponent {
     private val yelpService: YelpService by inject()
 
     override suspend fun getBusinessesByLatLng(yelpLatLngSearch: YelpLatLngSearch, radius: Int?): Result<List<Business>> =
-        yelpService.getBusinessesByLatLng(yelpLatLngSearch.latitude, yelpLatLngSearch.longitude, limit = 50, radius = radius).map { yelpSearch ->
-            yelpSearch.businesses.map { businessDTO -> businessDTO.convertToBusiness() }
+        yelpService.getBusinessesByLatLng(yelpLatLngSearch.latitude, yelpLatLngSearch.longitude, limit = 50, radius = radius).map { yelpSearch: YelpBusinessesDto ->
+            yelpSearch.businesses.map { businessDto -> businessDto.convertToBusiness() }
         }.mapErrors()
+
 }

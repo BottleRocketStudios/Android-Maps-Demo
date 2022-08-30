@@ -406,11 +406,6 @@ fun DependencyHandler.placesApiDependencies() {
     implementation(Libraries.PLACES_API_KTX)
 }
 
-fun DependencyHandler.placesApiDependencies() {
-    implementation(Libraries.PLACES_API)
-    implementation(Libraries.PLACES_API_KTX)
-}
-
 fun DependencyHandler.accompanistDependencies() {
     implementation(Libraries.ACCOMPANIST_WEBVIEW)
     implementation(Libraries.ACCOMPANIST_NAVIGATION_ANIMATION)
