@@ -8,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.bottlerocketstudios.compose.map.GoogleMapsView
 import com.bottlerocketstudios.compose.map.googleMapScreenStateTest
+import com.bottlerocketstudios.compose.resources.AndroidMapsDemoTheme
 import com.bottlerocketstudios.mapsdemo.ui.map.YelpViewModel
 import com.bottlerocketstudios.mapsdemo.ui.map.toState
-import com.bottlerocketstudios.mapsdemo.ui.theme.AndroidMapsDemoTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
