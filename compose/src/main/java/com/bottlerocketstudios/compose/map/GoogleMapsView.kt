@@ -52,7 +52,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
 
     // Observing and controlling the camera's state can be done with a CameraPositionState
     val googleCameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(googleMapScreenState.dallasLatLng, CITY_ZOOM_LEVEL)
+        position = CameraPosition.fromLatLngZoom(LatLng(googleMapScreenState.dallasLatLng.latitude, googleMapScreenState.dallasLatLng.longitude), CITY_ZOOM_LEVEL)
     }
     val dialogVisibility = remember {
         mutableStateOf(value = false)
