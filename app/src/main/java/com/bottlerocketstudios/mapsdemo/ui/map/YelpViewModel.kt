@@ -49,7 +49,7 @@ class YelpViewModel : BaseViewModel() {
     }
 
     private fun getYelpBusinesses(yelpLatLngSearch: YelpLatLngSearch, radius: Int?) {
-        viewModelScope.launch(dispatcherProvider.IO) {
+        launchIO {
             yelpRepository.getBusinessesByLatLng(yelpLatLngSearch, radius)
                 .onSuccess { businessList ->
                     yelpBusinessState.value = businessList

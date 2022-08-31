@@ -32,8 +32,10 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>, selectedYelpMarke
     val noPosition = -1
     val state = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+    // a noPosition is to prevent it from rubber banding  back to the item position if you try to scroll the lazy column
     val itemPosition = remember {
-        mutableStateOf(value = -1)
+        mutableStateOf(value = noPosition)
     }
 
     coroutineScope.launch {
@@ -69,6 +71,7 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>, selectedYelpMarke
             }
             if (itemPosition.value > noPosition) {
                 coroutineScope.launch {
+                    // Scroll to item then a noPosition to prevent it from rubber banding back to the item
                     state.animateScrollToItem(itemPosition.value)
                     itemPosition.value = noPosition
                 }
