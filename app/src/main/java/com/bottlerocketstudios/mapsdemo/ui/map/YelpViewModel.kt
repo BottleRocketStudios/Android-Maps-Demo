@@ -67,11 +67,7 @@ class YelpViewModel : BaseViewModel() {
 
             getYelpBusinesses(
                 latLong = latLong,
-                radius = if (zoomLevel > ZOOM_THRESHOLD) {
-                    null
-                } else {
-                    MAX_SEARCH_RADIUS_METERS
-                }
+                radius = determineRadius(zoomLevel)
             )
         }
     }
@@ -79,11 +75,19 @@ class YelpViewModel : BaseViewModel() {
     fun resetError() {
         errorStateFlow.value = UserFacingError.NoError
     }
-    fun retrySearch() {
-        getYelpBusinesses(LatLong(dallasLatLng.latitude, dallasLatLng.longitude), radius = null)
+    fun retrySearch(latLong: LatLong, zoomLevel: Float) {
+        getYelpBusinesses(latLong, radius = determineRadius(zoomLevel))
     }
 
     fun setSelectedMarker(yelpMarker: YelpMarker) {
         selectedMarker.value = yelpMarker
+    }
+
+    private fun determineRadius(zoomLevel: Float): Int? {
+        return if (zoomLevel > ZOOM_THRESHOLD) {
+            null
+        } else {
+            MAX_SEARCH_RADIUS_METERS
+        }
     }
 }

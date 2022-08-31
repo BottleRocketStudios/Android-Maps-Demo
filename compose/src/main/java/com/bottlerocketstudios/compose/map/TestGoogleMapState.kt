@@ -11,7 +11,7 @@ val googleMapScreenStateTest = GoogleMapScreenState(
     dallasLatLng = LatLong(32.7767, -96.7970),
     mutableStateOf(UserFacingError.NoError),
     resetError = {},
-    retrySearch = {},
+    retrySearch = { _, _ -> },
     onCameraMoveSearch = { _, _ -> },
     googleMarkers = mutableStateOf(emptyList()),
     setSelectedMarker = {},

@@ -11,7 +11,7 @@ data class GoogleMapScreenState(
     val dallasLatLng: LatLong,
     val yelpError: State<UserFacingError>,
     val resetError: () -> Unit,
-    val retrySearch: (latLong: LatLong) -> Unit,
+    val retrySearch: (latLong: LatLong, zoomLevel: Float) -> Unit,
     val onCameraMoveSearch: (latLong: LatLong, zoomLevel: Float) -> Unit,
     val googleMarkers: State<List<YelpMarker>>,
     val setSelectedMarker: (yelpMarker: YelpMarker) -> Unit,
