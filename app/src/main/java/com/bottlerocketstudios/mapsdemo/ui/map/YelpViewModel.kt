@@ -3,7 +3,7 @@ package com.bottlerocketstudios.mapsdemo.ui.map
 import androidx.lifecycle.viewModelScope
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
-import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
+import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
 import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
 import com.bottlerocketstudios.mapsdemo.ui.BaseViewModel
@@ -31,7 +31,7 @@ class YelpViewModel : BaseViewModel() {
         }
     }
     val selectedMarker: MutableStateFlow<YelpMarker> = MutableStateFlow(YelpMarker(latitude = 0.0, longitude = 0.0, businessName = ""))
-    val dallasLatLng: LatLng = LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
+    val dallasLatLng: LatLong = LatLong(DEFAULT_LATITUDE, DEFAULT_LONGITUDE)
     private var searchJob: Job? = null
 
     private companion object {
@@ -45,19 +45,19 @@ class YelpViewModel : BaseViewModel() {
     }
 
     init {
-        getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude), MAX_SEARCH_RADIUS)
+        getYelpBusinesses(LatLong(dallasLatLng.latitude, dallasLatLng.longitude), MAX_SEARCH_RADIUS)
     }
 
-    private fun getYelpBusinesses(yelpLatLngSearch: YelpLatLngSearch, radius: Int?) {
+    private fun getYelpBusinesses(latLong: LatLong, radius: Int?) {
         launchIO {
-            yelpRepository.getBusinessesByLatLng(yelpLatLngSearch, radius)
+            yelpRepository.getBusinessesByLatLng(latLong, radius)
                 .onSuccess { businessList ->
                     yelpBusinessState.value = businessList
                 }.handleFailure()
         }
     }
 
-    fun getYelpBusinessesOnMapMove(yelpLatLngSearch: YelpLatLngSearch, zoomLevel: Float) {
+    fun getYelpBusinessesOnMapMove(latLong: LatLong, zoomLevel: Float) {
 
         searchJob?.cancel()
 
@@ -67,7 +67,7 @@ class YelpViewModel : BaseViewModel() {
             delay(SEARCH_DELAY)
 
             getYelpBusinesses(
-                yelpLatLngSearch = yelpLatLngSearch,
+                latLong = latLong,
                 radius = if (zoomLevel > ZOOM_THRESHOLD) {
                     null
                 } else {
@@ -81,7 +81,7 @@ class YelpViewModel : BaseViewModel() {
         errorStateFlow.value = UserFacingError.NoError
     }
     fun retrySearch() {
-        getYelpBusinesses(YelpLatLngSearch(dallasLatLng.latitude, dallasLatLng.longitude), radius = null)
+        getYelpBusinesses(LatLong(dallasLatLng.latitude, dallasLatLng.longitude), radius = null)
     }
 
     fun setSelectedMarker(yelpMarker: YelpMarker) {

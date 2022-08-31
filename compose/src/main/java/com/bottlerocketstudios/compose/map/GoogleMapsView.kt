@@ -20,7 +20,7 @@ import com.bottlerocketstudios.compose.utils.PreviewAllDevices
 import com.bottlerocketstudios.compose.yelp.RetryButton
 import com.bottlerocketstudios.compose.yelp.YelpBusinessList
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
-import com.bottlerocketstudios.mapsdemo.domain.models.YelpLatLngSearch
+import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -108,7 +108,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             }
 
             if (googleCameraPositionState.isMoving) {
-                val search = YelpLatLngSearch(
+                val search = LatLong(
                     latitude = googleCameraPositionState.position.target.latitude,
                     longitude = googleCameraPositionState.position.target.longitude
                 )
