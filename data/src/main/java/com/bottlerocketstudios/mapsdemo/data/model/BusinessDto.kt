@@ -13,7 +13,7 @@ data class BusinessDto(
     @Json(name = "name") val businessName: String,
     @Json(name = "image_url") val imageUrl: String,
     @Json(name = "coordinates") val coordinates: CoordinatesDto,
-): Dto
+) : Dto
 
 fun BusinessDto.convertToBusiness() = Business(
     id = id,

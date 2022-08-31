@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
-import com.google.android.gms.maps.model.LatLng
 
 val googleMapScreenStateTest = GoogleMapScreenState(
     businessList =

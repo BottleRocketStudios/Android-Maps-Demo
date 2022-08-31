@@ -7,7 +7,6 @@ import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
 import com.bottlerocketstudios.mapsdemo.domain.repositories.YelpRepository
 import com.bottlerocketstudios.mapsdemo.ui.BaseViewModel
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,15 +36,15 @@ class YelpViewModel : BaseViewModel() {
     private companion object {
         const val DEFAULT_LATITUDE = 32.7767
         const val DEFAULT_LONGITUDE = -96.7970
-        const val SEARCH_DELAY = 300L
-        const val ZOOM_THRESHOLD = 13
+        const val SEARCH_DELAY_MILLS = 300L
+        const val ZOOM_THRESHOLD = 13f
 
         // Yelp Search Radius are in meters. 40,000 meter is about 25 miles
-        const val MAX_SEARCH_RADIUS = 40000
+        const val MAX_SEARCH_RADIUS_METERS = 40000
     }
 
     init {
-        getYelpBusinesses(LatLong(dallasLatLng.latitude, dallasLatLng.longitude), MAX_SEARCH_RADIUS)
+        getYelpBusinesses(LatLong(dallasLatLng.latitude, dallasLatLng.longitude), MAX_SEARCH_RADIUS_METERS)
     }
 
     private fun getYelpBusinesses(latLong: LatLong, radius: Int?) {
@@ -64,14 +63,14 @@ class YelpViewModel : BaseViewModel() {
         searchJob = viewModelScope.launch(dispatcherProvider.IO) {
             // Delay is added to wait for the camera to stop moving before performing
             // the search.
-            delay(SEARCH_DELAY)
+            delay(SEARCH_DELAY_MILLS)
 
             getYelpBusinesses(
                 latLong = latLong,
                 radius = if (zoomLevel > ZOOM_THRESHOLD) {
                     null
                 } else {
-                    MAX_SEARCH_RADIUS
+                    MAX_SEARCH_RADIUS_METERS
                 }
             )
         }

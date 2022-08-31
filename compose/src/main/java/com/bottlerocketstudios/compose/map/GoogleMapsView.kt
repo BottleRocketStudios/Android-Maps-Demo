@@ -76,7 +76,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         if (showRetryButton.value) {
             RetryButton(retry = {
                 showRetryButton.value = false
-                googleMapScreenState.retrySearch()
+                googleMapScreenState.retrySearch(LatLong(googleCameraPositionState.position.target.latitude, googleCameraPositionState.position.target.longitude))
             })
         }
         GoogleMap(
@@ -87,7 +87,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             cameraPositionState = googleCameraPositionState
         ) {
             if (googleMapScreenState.googleMarkers.value.isNotEmpty()) {
-                addMarkers(
+                AddMarkers(
                     yelpMarkers = googleMapScreenState.googleMarkers.value,
                     onclick = { marker ->
                         Timber.d("${marker.id} ${marker.title}")
@@ -164,7 +164,7 @@ fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
     }
 }
 @Composable
-fun addMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
+fun AddMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
     yelpMarkers.forEach { yelpMarker ->
         Marker(
             state = MarkerState(

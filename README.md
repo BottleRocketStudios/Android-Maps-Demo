@@ -8,7 +8,7 @@ Bottle Rocket Android Maps Guidelines
 4. On the dialog box click on edit API key. You can choose `None` for the application restrictions if you're only testing out the demo. Otherwise choose Android apps and follow the directions.
 5. Choose library from the side menu and click on Maps SDK for Android, on the next screen choose Enable.
    1. If you need the Places API you will also need to locate it from the list of library options and enable this as well.
-6. Back in the project locate the ```secrets``` block from project level build.gradle and follow the directions in adding your key to the app.
+6. Back in the project locate the `secrets` block from project level build.gradle and follow the directions in adding your key to the app.
    1. Note: Here is the documentation on what the Secrets Gradle plugin is for https://developers.google.com/maps/documentation/android-sdk/secrets-gradle-plugin
 
 ## Sets on obtaining a Yelp API Key
@@ -18,6 +18,6 @@ Bottle Rocket Android Maps Guidelines
 4. Copy API Key and in local.properties add value `YELP_API_KEY` and add your API key there. 
 
 ## Change from AllProjects to DependencyResolutionManagement
-From Gradle version 6.8 and up, ```allProjects``` block is not required to list repositories. Instead list them in the project-level ```settings.gradle.kts```. If attempt to add an allProjects block in your gradle file. Gradle will throw an error if dependencyResolutionManagement is present
-in the project-level ```settings.gradle.kts```. 
+From Gradle version 6.8 and up, `allProjects` block is not required to list repositories. Instead list them in the project-level `settings.gradle.kts`. If attempt to add an allProjects block in your gradle file. Gradle will throw an error if dependencyResolutionManagement is present
+in the project-level `settings.gradle.kts`. 
 
