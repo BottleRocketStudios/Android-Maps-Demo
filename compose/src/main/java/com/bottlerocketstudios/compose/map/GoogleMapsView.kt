@@ -39,8 +39,8 @@ import timber.log.Timber
 private const val MAX_ZOOM_LEVEL = 15f // Street level
 private const val MIN_ZOOM_LEVEL = 5f // Landmass/Continent
 private const val CITY_ZOOM_LEVEL = 11f
-private const val MARKER_TO_FOREGROUND = 100f
-private const val MARKER_TO_BACKGROUND = 0f
+private const val MARKER_TO_FOREGROUND_Z_INDEX = 100f
+private const val MARKER_TO_BACKGROUND_Z_INDEX = 0f
 
 @Composable
 fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: Boolean = false, modifier: Modifier) {
@@ -76,9 +76,16 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         if (showRetryButton.value) {
             RetryButton(retry = {
                 showRetryButton.value = false
-                googleMapScreenState.retrySearch()
+                googleMapScreenState.retrySearch(
+                    LatLong(
+                        googleCameraPositionState.position.target.latitude,
+                        googleCameraPositionState.position.target.longitude
+                    ),
+                    googleCameraPositionState.position.zoom
+                )
             })
         }
+
         GoogleMap(
             properties = mapProperties,
             modifier = if (fullScreenMaps.value) Modifier.fillMaxSize() else Modifier
@@ -87,7 +94,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             cameraPositionState = googleCameraPositionState
         ) {
             if (googleMapScreenState.googleMarkers.value.isNotEmpty()) {
-                addMarkers(
+                AddMarkers(
                     yelpMarkers = googleMapScreenState.googleMarkers.value,
                     onclick = { marker ->
                         Timber.d("${marker.id} ${marker.title}")
@@ -164,7 +171,7 @@ fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
     }
 }
 @Composable
-fun addMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
+fun AddMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
     yelpMarkers.forEach { yelpMarker ->
         Marker(
             state = MarkerState(
@@ -178,7 +185,7 @@ fun addMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelp
             },
             onClick = onclick,
             tag = yelpMarker,
-            zIndex = if (yelpMarkerSelected == yelpMarker) MARKER_TO_FOREGROUND else MARKER_TO_BACKGROUND
+            zIndex = if (yelpMarkerSelected == yelpMarker) MARKER_TO_FOREGROUND_Z_INDEX else MARKER_TO_BACKGROUND_Z_INDEX
         )
     }
 }

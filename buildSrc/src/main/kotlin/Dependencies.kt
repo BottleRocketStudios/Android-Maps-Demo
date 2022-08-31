@@ -399,8 +399,7 @@ fun DependencyHandler.composeMapsDependencies() {
     implementation((Libraries.COMPOSE_MAPS_WIDGETS))
     implementation((Libraries.GOOGLE_MAPS))
 }
-// https://developers.google.com/maps/documentation/places/android-sdk/ktx
-// https://github.com/googlemaps/android-places-ktx
+
 fun DependencyHandler.placesApiDependencies() {
     implementation(Libraries.PLACES_API)
     implementation(Libraries.PLACES_API_KTX)
