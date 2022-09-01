@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,16 +24,17 @@ import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.compose.utils.PreviewAllDevices
 import com.bottlerocketstudios.compose.yelp.RetryButton
 import com.bottlerocketstudios.compose.yelp.YelpBusinessList
+import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.maps.android.clustering.ClusterItem
+import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.android.clustering.algo.Algorithm
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapEffect
@@ -40,7 +43,6 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import timber.log.Timber
 
 // https://developers.google.com/maps/documentation/android-sdk/views#zoom
 private const val MAX_ZOOM_LEVEL = 15f // Street level
@@ -48,6 +50,15 @@ private const val MIN_ZOOM_LEVEL = 5f // Landmass/Continent
 private const val CITY_ZOOM_LEVEL = 11f
 private const val MARKER_TO_FOREGROUND_Z_INDEX = 100f
 private const val MARKER_TO_BACKGROUND_Z_INDEX = 0f
+
+suspend fun someCoolFunction(busineses: List<Business>, algorithm: Algorithm<T>, zoom: Float): List<Cluster<*>> {
+    algorithm.lock()
+    try {
+        return algorithm.getClusters(zoom).toList()
+    } finally {
+        algorithm.unlock()
+    }
+}
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
@@ -66,12 +77,23 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         mutableStateOf(value = false)
     }
 
-    val fullScreenMaps = remember(googleMapScreenState.businessList) {
+    val fullScreenMaps: State<Boolean> = remember(googleMapScreenState.businessList) {
         derivedStateOf { googleMapScreenState.businessList.value.isEmpty() }
     }
 
     val showRetryButton = remember {
         mutableStateOf(value = false)
+    }
+
+    val clusterMarkers: MutableState<List<Cluster<*>>> = remember {
+        mutableStateOf(emptyList())
+    }
+
+//    TODO - Setup algorithm in a remember
+//    Update camera center and other info in algorithm from map
+
+    LaunchedEffect(key1 = googleMapScreenState.businessList) {
+        clusterMarkers.value = someCoolFunction(googleMapScreenState.businessList.value)
     }
 
     dialogVisibility.value = googleMapScreenState.yelpError.value != UserFacingError.NoError
@@ -123,7 +145,9 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
                     }
                 }
 
-                /*addMarkers(
+//                 TODO - call AddMarkers with value from clusterMarkers
+
+                /*AddMarkers(
                     yelpMarkers = googleMapScreenState.googleMarkers.value,
                     onclick = { marker ->
                         Timber.d("${marker.id} ${marker.title}")
@@ -204,6 +228,7 @@ fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
 @Composable
 fun AddMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
     yelpMarkers.forEach { yelpMarker ->
+
         Marker(
             state = MarkerState(
                 position = LatLng(yelpMarker.latitude, yelpMarker.longitude)

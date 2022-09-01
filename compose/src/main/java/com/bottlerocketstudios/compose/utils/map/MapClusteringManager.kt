@@ -1,6 +1,7 @@
-package com.bottlerocketstudios.compose.utils
+package com.bottlerocketstudios.compose.utils.map
 
 import com.bottlerocketstudios.mapsdemo.domain.infrastructure.coroutine.DispatcherProvider
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.algo.Algorithm
@@ -19,6 +20,7 @@ import org.koin.core.component.inject
 class MapClusteringManager<T : ClusterItem>(googleCameraPositionState: CameraPositionState, markerClicked: () -> Unit): KoinComponent {
     private val dispatcherProvider: DispatcherProvider by inject()
     private var searchJob: Job? = null
+    private var previousCameraPosition: CameraPosition? = null
 
     private val cameraPositionState: CameraPositionState = googleCameraPositionState
 
@@ -46,7 +48,7 @@ class MapClusteringManager<T : ClusterItem>(googleCameraPositionState: CameraPos
         if (algorithm.shouldReclusterOnMapMovement()) {
             algorithm.onCameraChange(cameraPositionState.position)
         }
-
+        cluster()
     }
 
     private fun getAlgorithm(): Algorithm<T> = algorithm
@@ -55,15 +57,11 @@ class MapClusteringManager<T : ClusterItem>(googleCameraPositionState: CameraPos
      *  This should be called when adding, removing, updating clearing item(s).
      */
 
-    fun cluster() {
+    private fun cluster() {
         searchJob?.cancel()
         searchJob = CoroutineScope(dispatcherProvider.IO).launch {
             clusterTask()
         }
-
-    }
-
-    fun setRenderer(renderer: ClusterRenderer<T>) {
 
     }
 
@@ -78,7 +76,19 @@ class MapClusteringManager<T : ClusterItem>(googleCameraPositionState: CameraPos
     }
 
     fun onCameraIdle() {
+        algorithm.onCameraChange(cameraPositionState.position)
 
+        // delegate clustering to the algorithm
+        if(algorithm.shouldReclusterOnMapMovement()) {
+            cluster()
+
+            //Clusters don't need to be re-computed if user panned tilt or rotated the map
+        } else if(previousCameraPosition == null ||
+            previousCameraPosition?.zoom != cameraPositionState.position.zoom) {
+
+            previousCameraPosition = cameraPositionState.position
+            cluster()
+        }
     }
 
 
