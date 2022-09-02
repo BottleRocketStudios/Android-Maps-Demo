@@ -36,7 +36,7 @@ class YelpViewModel : BaseViewModel() {
     private companion object {
         const val DEFAULT_LATITUDE = 32.7767
         const val DEFAULT_LONGITUDE = -96.7970
-        const val SEARCH_DELAY_MILLS = 300L
+        const val SEARCH_DELAY_MS  = 300L
         const val ZOOM_THRESHOLD = 13f
 
         // Yelp Search Radius are in meters. 40,000 meter is about 25 miles
@@ -63,7 +63,7 @@ class YelpViewModel : BaseViewModel() {
         searchJob = viewModelScope.launch(dispatcherProvider.IO) {
             // Delay is added to wait for the camera to stop moving before performing
             // the search.
-            delay(SEARCH_DELAY_MILLS)
+            delay(SEARCH_DELAY_MS)
 
             getYelpBusinesses(
                 latLong = latLong,
