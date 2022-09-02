@@ -1,18 +1,21 @@
 package com.bottlerocketstudios.compose.utils.map
 
-import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
+
+import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
-fun mapClustering(yelpMarkers: List<YelpMarker>): List<MapClusterItem> {
+
+
+fun List<Business>.toMapClusterItems(): List<MapClusterItem> {
     val items = mutableListOf<MapClusterItem>()
 
-    yelpMarkers.forEach { yelpMarkers ->
+    this.forEach { business ->
         val latLng = LatLng(
-            yelpMarkers.latitude,
-            yelpMarkers.longitude
+            business.coordinates.latitude,
+            business.coordinates.longitude
         )
-        items.add(MapClusterItem(latLng, yelpMarkers.businessName, yelpMarkers.businessName))
+        items.add(MapClusterItem(latLng, business.businessName, business.businessName))
     }
     return items
 }

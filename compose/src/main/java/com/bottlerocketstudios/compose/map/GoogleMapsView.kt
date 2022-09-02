@@ -15,15 +15,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.bottlerocketstudios.compose.alertdialog.CustomAlertDialog
 import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.compose.utils.PreviewAllDevices
 import com.bottlerocketstudios.compose.utils.map.MapClusterItem
-import com.bottlerocketstudios.compose.utils.map.mapClustering
+import com.bottlerocketstudios.compose.utils.map.clusteringIconGenerator
+import com.bottlerocketstudios.compose.utils.map.toMapClusterItems
 import com.bottlerocketstudios.compose.yelp.RetryButton
 import com.bottlerocketstudios.compose.yelp.YelpBusinessList
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
@@ -106,6 +107,11 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
 
     val items = remember { mutableStateListOf<MapClusterItem>() }
 
+    LaunchedEffect(key1 = googleMapScreenState.businessList.value, key2 = googleCameraPositionState.isMoving) {
+        items.addAll(googleMapScreenState.businessList.value.toMapClusterItems())
+        clusterMarkers.value = clusterList(items, algorithm = algorithm, googleCameraPositionState.position.zoom)
+    }
+
     dialogVisibility.value = googleMapScreenState.yelpError.value != UserFacingError.NoError
 
     Column(
@@ -134,15 +140,8 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             cameraPositionState = googleCameraPositionState
         ) {
 
-            if (googleMapScreenState.googleMarkers.value.isNotEmpty()) {
+            AddClusterMarkers(clusterMarkers = clusterMarkers.value, onclick = { marker -> false }, googleMapScreenState.yelpMarkerSelected.value)
 
-                LaunchedEffect(key1 = googleMapScreenState.businessList, key2 = googleCameraPositionState.isMoving) {
-                    items.addAll(mapClustering(yelpMarkers = googleMapScreenState.googleMarkers.value))
-                    clusterMarkers.value = clusterList(items, algorithm = algorithm, googleCameraPositionState.position.zoom)
-                }
-
-                AddClusterMarkers(clusterMarkers = clusterMarkers.value, onclick = { marker -> false }, googleMapScreenState.yelpMarkerSelected.value)
-            }
 
                 /*AddMarkers(
                     yelpMarkers = googleMapScreenState.googleMarkers.value,
@@ -250,7 +249,8 @@ fun AddClusterMarkers(clusterMarkers: List<Cluster<MapClusterItem>>, onclick: (M
             state = MarkerState(
                 position = LatLng(cluster.position.latitude, cluster.position.longitude),
             ),
-            title = cluster.items.size.toString()
+            title = cluster.items.size.toString(),
+            icon = clusteringIconGenerator(context = LocalContext.current, cluster)
         )
     }
 }
