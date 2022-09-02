@@ -12,19 +12,20 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.bottlerocketstudios.compose.alertdialog.CustomAlertDialog
 import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.compose.utils.PreviewAllDevices
+import com.bottlerocketstudios.compose.utils.map.MapClusterItem
+import com.bottlerocketstudios.compose.utils.map.mapClustering
 import com.bottlerocketstudios.compose.yelp.RetryButton
 import com.bottlerocketstudios.compose.yelp.YelpBusinessList
-import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
@@ -33,13 +34,13 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.clustering.Cluster
-import com.google.maps.android.clustering.ClusterManager
-import com.google.maps.android.clustering.algo.Algorithm
+import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm
+import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator
+import com.google.maps.android.clustering.algo.ScreenBasedAlgorithm
+import com.google.maps.android.clustering.algo.ScreenBasedAlgorithmAdapter
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -51,16 +52,30 @@ private const val CITY_ZOOM_LEVEL = 11f
 private const val MARKER_TO_FOREGROUND_Z_INDEX = 100f
 private const val MARKER_TO_BACKGROUND_Z_INDEX = 0f
 
-suspend fun someCoolFunction(busineses: List<Business>, algorithm: Algorithm<T>, zoom: Float): List<Cluster<*>> {
+private var algorithm: ScreenBasedAlgorithm<MapClusterItem> = ScreenBasedAlgorithmAdapter(
+    PreCachingAlgorithmDecorator(
+        NonHierarchicalDistanceBasedAlgorithm()
+    )
+)
+
+fun clusterList(clusterItems: List<MapClusterItem>, algorithm: ScreenBasedAlgorithm<MapClusterItem>, zoom: Float): List<Cluster<MapClusterItem>> {
     algorithm.lock()
     try {
+        val oldAlgorithm = algorithm
+
+        oldAlgorithm.lock()
+        try {
+            algorithm.addItems(oldAlgorithm.items)
+        } finally {
+            oldAlgorithm.unlock()
+        }
+        algorithm.addItems(clusterItems)
         return algorithm.getClusters(zoom).toList()
     } finally {
         algorithm.unlock()
     }
 }
 
-@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: Boolean = false, modifier: Modifier) {
     val mapProperties by remember {
@@ -85,16 +100,11 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
         mutableStateOf(value = false)
     }
 
-    val clusterMarkers: MutableState<List<Cluster<*>>> = remember {
+    val clusterMarkers: MutableState<List<Cluster<MapClusterItem>>> = remember {
         mutableStateOf(emptyList())
     }
 
-//    TODO - Setup algorithm in a remember
-//    Update camera center and other info in algorithm from map
-
-    LaunchedEffect(key1 = googleMapScreenState.businessList) {
-        clusterMarkers.value = someCoolFunction(googleMapScreenState.businessList.value)
-    }
+    val items = remember { mutableStateListOf<MapClusterItem>() }
 
     dialogVisibility.value = googleMapScreenState.yelpError.value != UserFacingError.NoError
 
@@ -124,28 +134,15 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             cameraPositionState = googleCameraPositionState
         ) {
 
-
             if (googleMapScreenState.googleMarkers.value.isNotEmpty()) {
 
-                val context = LocalContext.current
-                var clusterManager by remember {
-                    mutableStateOf<ClusterManager<MapClusterItem>?>(null)
-                }
-                val items = MapClustering(yelpMarkers = googleMapScreenState.googleMarkers.value)
-
-                MapEffect(items) { map ->
-                    if(clusterManager == null) {
-                        clusterManager = ClusterManager<MapClusterItem>(context, map)
-                    }
-                    clusterManager?.addItems(items)
-                }
-                LaunchedEffect(key1 = googleCameraPositionState.isMoving) {
-                    if(!googleCameraPositionState.isMoving) {
-                        clusterManager?.onCameraIdle()
-                    }
+                LaunchedEffect(key1 = googleMapScreenState.businessList, key2 = googleCameraPositionState.isMoving) {
+                    items.addAll(mapClustering(yelpMarkers = googleMapScreenState.googleMarkers.value))
+                    clusterMarkers.value = clusterList(items, algorithm = algorithm, googleCameraPositionState.position.zoom)
                 }
 
-//                 TODO - call AddMarkers with value from clusterMarkers
+                AddClusterMarkers(clusterMarkers = clusterMarkers.value, onclick = { marker -> false }, googleMapScreenState.yelpMarkerSelected.value)
+            }
 
                 /*AddMarkers(
                     yelpMarkers = googleMapScreenState.googleMarkers.value,
@@ -166,8 +163,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
                     googleMapScreenState.yelpMarkerSelected.value
                 )*/
 
-
-            }
+            // }
 
             if (googleCameraPositionState.isMoving) {
                 val search = LatLong(
@@ -242,6 +238,19 @@ fun AddMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelp
             onClick = onclick,
             tag = yelpMarker,
             zIndex = if (yelpMarkerSelected == yelpMarker) MARKER_TO_FOREGROUND_Z_INDEX else MARKER_TO_BACKGROUND_Z_INDEX
+        )
+    }
+}
+
+@Composable
+fun AddClusterMarkers(clusterMarkers: List<Cluster<MapClusterItem>>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
+
+    clusterMarkers.forEach { cluster ->
+        Marker(
+            state = MarkerState(
+                position = LatLng(cluster.position.latitude, cluster.position.longitude),
+            ),
+            title = cluster.items.size.toString()
         )
     }
 }
