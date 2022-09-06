@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AndroidMapsDemoTheme {
-                GoogleMapsView(toolbarEnabled = false, modifier = Modifier.fillMaxSize(), googleMapScreenState = yelpViewModel.toState())
+                GoogleMapsView(modifier = Modifier.fillMaxSize(), googleMapScreenState = yelpViewModel.toState())
             }
         }
     }
@@ -31,7 +31,6 @@ class MainActivity : ComponentActivity() {
 fun DefaultPreview() {
     AndroidMapsDemoTheme {
         GoogleMapsView(
-            toolbarEnabled = false,
             modifier = Modifier.fillMaxSize(),
             googleMapScreenState = googleMapScreenStateTest
         )

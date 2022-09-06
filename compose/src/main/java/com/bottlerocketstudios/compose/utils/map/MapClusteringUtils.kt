@@ -1,11 +1,8 @@
 package com.bottlerocketstudios.compose.utils.map
 
-
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
-
-
 
 fun List<Business>.toMapClusterItems(): List<MapClusterItem> {
     val items = mutableListOf<MapClusterItem>()

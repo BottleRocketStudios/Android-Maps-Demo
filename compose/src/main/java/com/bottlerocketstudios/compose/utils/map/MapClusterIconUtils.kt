@@ -24,8 +24,12 @@ private const val DEFAULT_SATURATION = 1f
 private const val DEFAULT_VALUE = .6f
 private const val HUE_RANGE = 220f
 private const val SIZE_RANGE = 300f
-
-fun clusteringIconGenerator(context: Context, cluster: Cluster<MapClusterItem>): BitmapDescriptor {
+private const val PADDING = 12
+private const val STARTING_INDEX = 0
+private const val INDEX_ONE = 1
+private const val TRANSPARENT_WHITE = -0x7f000001
+private const val STROKE_MODIFIER = 3
+fun clusterIconGenerator(context: Context, cluster: Cluster<MapClusterItem>): BitmapDescriptor {
     val iconGenerator = IconGenerator(context)
     iconGenerator.apply {
         setContentView(makeSquaredTextView(context = context))
@@ -38,18 +42,19 @@ fun clusteringIconGenerator(context: Context, cluster: Cluster<MapClusterItem>):
     } else {
         null
     }
-    if(descriptor == null) {
+    if (descriptor == null) {
         circleBackground?.paint?.color = getColor(bucket)
         descriptor = BitmapDescriptorFactory.fromBitmap(
             iconGenerator.makeIcon(
                 getClusterText(bucket)
-            ))
+            )
+        )
         icons.put(bucket, descriptor)
     }
     return descriptor
-
 }
 
+// TextView is used to display the number in the cluster.
 private fun makeSquaredTextView(context: Context): ClusterMarkerTextView {
     val density = context.resources.displayMetrics.density
     val squareTextView = ClusterMarkerTextView(context)
@@ -58,22 +63,24 @@ private fun makeSquaredTextView(context: Context): ClusterMarkerTextView {
         this.layoutParams = layoutParams
         id = R.id.amu_text
     }
-    val twelveDpi: Int = (12 * density).toInt()
-    squareTextView.setPadding(twelveDpi, twelveDpi, twelveDpi, twelveDpi)
+    val padding: Int = (PADDING * density).toInt()
+    squareTextView.setPadding(padding, padding, padding, padding)
     return squareTextView
 }
 
+// Makes the
 private fun makeMapClusterBackground(context: Context): LayerDrawable {
     val density = context.resources.displayMetrics.density
     circleBackground = ShapeDrawable(OvalShape())
     val outline = ShapeDrawable(OvalShape())
-    outline.paint.color = -0x7f000001 // Transparent white.
+    outline.paint.color = TRANSPARENT_WHITE // Transparent white.
     val background = LayerDrawable(arrayOf<Drawable>(outline, circleBackground!!))
-    val strokeWidth: Int = (density * 3).toInt()
-    background.setLayerInset(1, strokeWidth, strokeWidth, strokeWidth, strokeWidth)
+    val strokeWidth: Int = (density * STROKE_MODIFIER).toInt()
+    background.setLayerInset(INDEX_ONE, strokeWidth, strokeWidth, strokeWidth, strokeWidth)
     return background
 }
 
+// Changes to the different hue and saturation based on the size of the cluster.
 private fun getColor(clusterSize: Int): Int {
     val size = clusterSize.toFloat().coerceAtMost(SIZE_RANGE)
     val hue = (SIZE_RANGE - size) * (SIZE_RANGE - size) / (SIZE_RANGE * SIZE_RANGE) * HUE_RANGE
@@ -90,14 +97,13 @@ fun getClusterText(bucket: Int): String {
     } else "$bucket+"
 }
 
-
+// Determine where the cluster will go in which bucket. Buckets are used for the String that will be displayed to the user.
 fun getBucket(cluster: Cluster<MapClusterItem>): Int {
-    val size = cluster.size
-    if (size <= buckets[MIN_BUCKET_SIZE]) {
-        return size
+    if (cluster.size <= buckets[MIN_BUCKET_SIZE]) {
+        return cluster.size
     }
-    for (index in 0 until buckets.size - 1) {
-        if (size < buckets[index + 1]) {
+    for (index in STARTING_INDEX until buckets.size - 1) {
+        if (cluster.size < buckets[index + 1]) {
             return buckets[index]
         }
     }
