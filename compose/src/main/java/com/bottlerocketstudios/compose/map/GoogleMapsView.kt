@@ -27,9 +27,10 @@ import com.bottlerocketstudios.compose.utils.map.clusteringIconGenerator
 import com.bottlerocketstudios.compose.utils.map.toMapClusterItems
 import com.bottlerocketstudios.compose.yelp.RetryButton
 import com.bottlerocketstudios.compose.yelp.YelpBusinessList
-import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
+import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -45,6 +46,7 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import timber.log.Timber
 
 // https://developers.google.com/maps/documentation/android-sdk/views#zoom
 private const val MAX_ZOOM_LEVEL = 15f // Street level
@@ -140,7 +142,18 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, toolbarEnabled: B
             cameraPositionState = googleCameraPositionState
         ) {
 
-            AddClusterMarkers(clusterMarkers = clusterMarkers.value, onclick = { marker -> false }, googleMapScreenState.yelpMarkerSelected.value)
+            AddClusterMarkers(clusterMarkers = clusterMarkers.value, onclick = { marker ->
+                googleMapScreenState.setSelectedMarker(marker.tag as YelpMarker)
+                googleCameraPositionState.move(
+                    CameraUpdateFactory.newLatLng(
+                        LatLng(
+                            marker.position.latitude,
+                            marker.position.longitude
+                        )
+                    )
+                )
+                true
+            }, googleMapScreenState.yelpMarkerSelected.value)
 
 
                 /*AddMarkers(
@@ -220,38 +233,49 @@ fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
         }
     }
 }
-@Composable
-fun AddMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
-    yelpMarkers.forEach { yelpMarker ->
 
-        Marker(
-            state = MarkerState(
-                position = LatLng(yelpMarker.latitude, yelpMarker.longitude)
-            ),
-            title = yelpMarker.businessName,
-            icon = if (yelpMarkerSelected == yelpMarker) {
-                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-            } else {
-                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
-            },
-            onClick = onclick,
+@Composable
+fun AddMarkers(yelpMarker: YelpMarker, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
+
+    Marker(
+        state = MarkerState(
+            position = LatLng(yelpMarker.latitude, yelpMarker.longitude)
+        ),
+        title = yelpMarker.businessName,
+        icon = if (yelpMarkerSelected == yelpMarker) {
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+        } else {
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
+        },
+        onClick = onclick,
             tag = yelpMarker,
             zIndex = if (yelpMarkerSelected == yelpMarker) MARKER_TO_FOREGROUND_Z_INDEX else MARKER_TO_BACKGROUND_Z_INDEX
         )
-    }
 }
 
 @Composable
 fun AddClusterMarkers(clusterMarkers: List<Cluster<MapClusterItem>>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
 
     clusterMarkers.forEach { cluster ->
-        Marker(
-            state = MarkerState(
-                position = LatLng(cluster.position.latitude, cluster.position.longitude),
-            ),
-            title = cluster.items.size.toString(),
-            icon = clusteringIconGenerator(context = LocalContext.current, cluster)
-        )
+        
+        if (cluster.size <= 2) {
+            cluster.items.forEach { mapClusterItem ->
+                val yelpMarker = YelpMarker(mapClusterItem.itemLatLng.latitude, mapClusterItem.itemLatLng.longitude, mapClusterItem.itemTitle)
+                AddMarkers(
+                    yelpMarker = yelpMarker,
+                    onclick = onclick,
+                    yelpMarkerSelected = yelpMarkerSelected
+                )
+            }
+        } else {
+            Marker(
+                state = MarkerState(
+                    position = LatLng(cluster.position.latitude, cluster.position.longitude),
+                ),
+                title = cluster.items.size.toString(),
+                icon = clusteringIconGenerator(context = LocalContext.current, cluster)
+            )
+        }
     }
 }
 
