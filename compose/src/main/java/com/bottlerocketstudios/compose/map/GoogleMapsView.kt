@@ -79,7 +79,7 @@ fun clusterList(clusterItems: List<MapClusterItem>, algorithm: ScreenBasedAlgori
 }
 
 @Composable
-fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, modifier: Modifier) {
+fun GoogleMapsView(modifier: Modifier, googleMapScreenState: GoogleMapScreenState) {
     val mapProperties by remember {
         mutableStateOf(
             MapProperties(maxZoomPreference = MAX_ZOOM_LEVEL, minZoomPreference = MIN_ZOOM_LEVEL)
@@ -130,7 +130,7 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, modifier: Modifie
                     ),
                     googleCameraPositionState.position.zoom
                 )
-            })
+            }, modifier = Modifier)
         }
 
         GoogleMap(
@@ -197,13 +197,11 @@ fun GoogleMapsView(googleMapScreenState: GoogleMapScreenState, modifier: Modifie
 fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
     when (yelpError) {
         is UserFacingError.ApiError -> CustomAlertDialog(
-            modifier = Modifier,
             title = yelpError.title,
             message = yelpError.description,
             onDismiss = onDismiss
         )
         is UserFacingError.GeneralError -> CustomAlertDialog(
-            modifier = Modifier,
             title = yelpError.title,
             message = yelpError.description,
             onDismiss = onDismiss

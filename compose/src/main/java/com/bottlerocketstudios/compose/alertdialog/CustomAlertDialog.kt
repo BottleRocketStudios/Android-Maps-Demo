@@ -6,7 +6,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.DialogProperties
@@ -14,7 +13,7 @@ import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.utils.Preview
 
 @Composable
-fun CustomAlertDialog(modifier: Modifier, title: Int, message: Int, onDismiss: () -> Unit) {
+fun CustomAlertDialog(title: Int, message: Int, onDismiss: () -> Unit) {
     MaterialTheme {
         Column {
 
@@ -42,7 +41,6 @@ fun CustomAlertDialog(modifier: Modifier, title: Int, message: Int, onDismiss: (
 fun PreviewCustomAlertDialog() {
     Preview {
         CustomAlertDialog(
-            modifier = Modifier,
             title = R.string.test_general_error_title,
             message = R.string.test_api_error_description,
             onDismiss = {}

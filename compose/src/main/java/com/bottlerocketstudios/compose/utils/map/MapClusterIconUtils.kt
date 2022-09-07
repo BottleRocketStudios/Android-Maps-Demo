@@ -18,7 +18,6 @@ import kotlin.math.pow
 
 // This is used to determine which bucket each cluster would go in.
 private val buckets = intArrayOf(10, 20, 50, 100, 200, 500, 1000)
-private const val MIN_BUCKET_SIZE = 0
 private val icons = SparseArray<BitmapDescriptor>()
 private var circleBackground: ShapeDrawable? = null
 private const val DEFAULT_SATURATION = 1f
@@ -26,7 +25,6 @@ private const val DEFAULT_VALUE = .6f
 private const val HUE_RANGE = 220f
 private const val SIZE_RANGE = 300f
 private const val PADDING = 12
-private const val STARTING_INDEX = 0
 private const val INDEX_ONE = 1
 private const val TRANSPARENT_WHITE = -0x7f000001
 private const val STROKE_MODIFIER = 3
@@ -98,5 +96,3 @@ fun getClusterText(size: Int) = "$size" + if (size >= buckets.first()) "+" else 
 
 // Determine where the cluster will go in which bucket. Buckets are used for the String that will be displayed to the user.
 fun getBucket(cluster: Cluster<MapClusterItem>) = buckets.lastOrNull { cluster.size > it } ?: cluster.size
-
-

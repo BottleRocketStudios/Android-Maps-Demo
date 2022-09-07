@@ -11,9 +11,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,7 +22,6 @@ import com.bottlerocketstudios.compose.map.YelpCardLayout
 import com.bottlerocketstudios.compose.resources.Dimens
 import com.bottlerocketstudios.mapsdemo.domain.models.Business
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -31,20 +30,19 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>, selectedYelpMarke
 
     val noPosition = -1
     val state = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
 
     // a noPosition is to prevent it from rubber banding  back to the item position if you try to scroll the lazy column
     val itemPosition = remember {
         mutableStateOf(value = noPosition)
     }
 
-    coroutineScope.launch {
+    LaunchedEffect(key1 = selectedYelpMarker.businessName, block = {
         businessList.forEachIndexed { index, business ->
             if (business.businessName == selectedYelpMarker.businessName) {
                 itemPosition.value = index
             }
         }
-    }
+    })
 
     LazyColumn(
         state = state,
@@ -69,20 +67,22 @@ fun ColumnScope.YelpBusinessList(businessList: List<Business>, selectedYelpMarke
             if (item.businessName == selectedYelpMarker.businessName) {
                 Timber.d("${item.businessName} - ${selectedYelpMarker.businessName}")
             }
-            if (itemPosition.value > noPosition) {
-                coroutineScope.launch {
+
+            LaunchedEffect(key1 = itemPosition.value, block = {
+                if (itemPosition.value > noPosition) {
+
                     // Scroll to item then a noPosition to prevent it from rubber banding back to the item
                     state.animateScrollToItem(itemPosition.value)
                     itemPosition.value = noPosition
                 }
-            }
+            })
         }
     }
 }
 
 @Composable
-fun ColumnScope.RetryButton(retry: () -> Unit, modifier: Modifier = Modifier.align(Alignment.CenterHorizontally)) {
-    Button(onClick = retry, modifier = modifier.padding(Dimens.grid_1)) {
+fun ColumnScope.RetryButton(retry: () -> Unit, modifier: Modifier) {
+    Button(onClick = retry, modifier = Modifier.align(Alignment.CenterHorizontally).padding(Dimens.grid_1)) {
         Text(text = stringResource(id = R.string.retry))
     }
 }
