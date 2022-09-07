@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.ui.IconGenerator
+import kotlin.math.pow
 
 // This is used to determine which bucket each cluster would go in.
 private val buckets = intArrayOf(10, 20, 50, 100, 200, 500, 1000)
@@ -81,31 +82,21 @@ private fun makeMapClusterBackground(context: Context): LayerDrawable {
 }
 
 // Changes to the different hue and saturation based on the size of the cluster.
-private fun getColor(clusterSize: Int): Int {
-    val size = clusterSize.toFloat().coerceAtMost(SIZE_RANGE)
-    val hue = (SIZE_RANGE - size) * (SIZE_RANGE - size) / (SIZE_RANGE * SIZE_RANGE) * HUE_RANGE
-    return Color.HSVToColor(
-        floatArrayOf(
-            hue, DEFAULT_SATURATION, DEFAULT_VALUE
-        )
+private fun getColor(clusterSize: Int): Int = Color.HSVToColor(
+    floatArrayOf(
+        (SIZE_RANGE - clusterSize).coerceAtLeast(0f).pow(2) / SIZE_RANGE.pow(2) * HUE_RANGE,
+        DEFAULT_SATURATION,
+        DEFAULT_VALUE
     )
-}
+)
 
-fun getClusterText(bucket: Int): String {
-    return if (bucket < buckets[MIN_BUCKET_SIZE]) {
-        bucket.toString()
-    } else "$bucket+"
-}
+fun getClusterText(size: Int) = "$size" + if (size >= buckets.first()) "+" else ""
+
+//    return if (bucketSize < buckets.first()) {
+//        bucketSize.toString()
+//    } else "$bucketSize+"
 
 // Determine where the cluster will go in which bucket. Buckets are used for the String that will be displayed to the user.
-fun getBucket(cluster: Cluster<MapClusterItem>): Int {
-    if (cluster.size <= buckets[MIN_BUCKET_SIZE]) {
-        return cluster.size
-    }
-    for (index in STARTING_INDEX until buckets.size - 1) {
-        if (cluster.size < buckets[index + 1]) {
-            return buckets[index]
-        }
-    }
-    return buckets[buckets.size - 1]
-}
+fun getBucket(cluster: Cluster<MapClusterItem>) = buckets.lastOrNull { cluster.size > it } ?: cluster.size
+
+
