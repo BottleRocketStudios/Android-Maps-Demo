@@ -17,13 +17,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.bottlerocketstudios.compose.alertdialog.CustomAlertDialog
 import com.bottlerocketstudios.compose.utils.Preview
 import com.bottlerocketstudios.compose.utils.PreviewAllDevices
 import com.bottlerocketstudios.compose.utils.map.MapClusterItem
-import com.bottlerocketstudios.compose.utils.map.clusterIconGenerator
+import com.bottlerocketstudios.compose.utils.map.clusterList
 import com.bottlerocketstudios.compose.utils.map.toMapClusterItems
 import com.bottlerocketstudios.compose.yelp.RetryButton
 import com.bottlerocketstudios.compose.yelp.YelpBusinessList
@@ -31,10 +30,8 @@ import com.bottlerocketstudios.mapsdemo.domain.models.LatLong
 import com.bottlerocketstudios.mapsdemo.domain.models.UserFacingError
 import com.bottlerocketstudios.mapsdemo.domain.models.YelpMarker
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm
 import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator
@@ -43,40 +40,17 @@ import com.google.maps.android.clustering.algo.ScreenBasedAlgorithmAdapter
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 // https://developers.google.com/maps/documentation/android-sdk/views#zoom
 private const val MAX_ZOOM_LEVEL = 18f // Street level
 private const val MIN_ZOOM_LEVEL = 5f // Landmass/Continent
 private const val CITY_ZOOM_LEVEL = 11f
-private const val MARKER_TO_FOREGROUND_Z_INDEX = 100f
-private const val MARKER_TO_BACKGROUND_Z_INDEX = 0f
-private const val MIN_CLUSTER_SIZE = 3
-
 private var algorithm: ScreenBasedAlgorithm<MapClusterItem> = ScreenBasedAlgorithmAdapter(
     PreCachingAlgorithmDecorator(
         NonHierarchicalDistanceBasedAlgorithm()
     )
 )
-
-fun clusterList(clusterItems: List<MapClusterItem>, algorithm: ScreenBasedAlgorithm<MapClusterItem>, zoom: Float): List<Cluster<MapClusterItem>> {
-    algorithm.lock()
-    try {
-        val oldAlgorithm = algorithm
-        oldAlgorithm.lock()
-        try {
-            algorithm.addItems(oldAlgorithm.items)
-        } finally {
-            oldAlgorithm.unlock()
-        }
-        algorithm.addItems(clusterItems)
-        return algorithm.getClusters(zoom).toList()
-    } finally {
-        algorithm.unlock()
-    }
-}
 
 @Composable
 fun GoogleMapsView(modifier: Modifier, googleMapScreenState: GoogleMapScreenState) {
@@ -208,49 +182,6 @@ fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
         )
         else -> {
             onDismiss()
-        }
-    }
-}
-
-@Composable
-fun AddMarkers(yelpMarker: YelpMarker, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
-
-    Marker(
-        state = MarkerState(
-            position = LatLng(yelpMarker.latitude, yelpMarker.longitude)
-        ),
-        title = yelpMarker.businessName,
-        icon = if (yelpMarkerSelected == yelpMarker) {
-            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-        } else {
-            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
-        },
-        onClick = onclick,
-        tag = yelpMarker,
-        zIndex = if (yelpMarkerSelected == yelpMarker) MARKER_TO_FOREGROUND_Z_INDEX else MARKER_TO_BACKGROUND_Z_INDEX
-    )
-}
-
-@Composable
-fun AddClusterMarkers(clusterMarkers: List<Cluster<MapClusterItem>>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
-
-    clusterMarkers.forEach { cluster ->
-        if (cluster.size < MIN_CLUSTER_SIZE) {
-            cluster.items.forEach { mapClusterItem ->
-                val yelpMarker = YelpMarker(mapClusterItem.itemLatLng.latitude, mapClusterItem.itemLatLng.longitude, mapClusterItem.itemTitle)
-                AddMarkers(
-                    yelpMarker = yelpMarker,
-                    onclick = onclick,
-                    yelpMarkerSelected = yelpMarkerSelected
-                )
-            }
-        } else {
-            Marker(
-                state = MarkerState(
-                    position = LatLng(cluster.position.latitude, cluster.position.longitude),
-                ),
-                icon = clusterIconGenerator(context = LocalContext.current, cluster)
-            )
         }
     }
 }
