@@ -41,6 +41,7 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.rememberCameraPositionState
+import timber.log.Timber
 
 // https://developers.google.com/maps/documentation/android-sdk/views#zoom
 private const val MAX_ZOOM_LEVEL = 18f // Street level
@@ -183,6 +184,25 @@ fun ShowErrorDialog(yelpError: UserFacingError, onDismiss: () -> Unit) {
         else -> {
             onDismiss()
         }
+    }
+}
+@Composable
+fun AddMarkers(yelpMarkers: List<YelpMarker>, onclick: (Marker) -> Boolean, yelpMarkerSelected: YelpMarker) {
+    yelpMarkers.forEach { yelpMarker ->
+        Marker(
+            state = MarkerState(
+                position = LatLng(yelpMarker.latitude, yelpMarker.longitude)
+            ),
+            title = yelpMarker.businessName,
+            icon = if (yelpMarkerSelected == yelpMarker) {
+                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+            } else {
+                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
+            },
+            onClick = onclick,
+            tag = yelpMarker,
+            zIndex = if (yelpMarkerSelected == yelpMarker) MARKER_TO_FOREGROUND_Z_INDEX else MARKER_TO_BACKGROUND_Z_INDEX
+        )
     }
 }
 
