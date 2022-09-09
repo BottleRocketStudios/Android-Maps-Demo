@@ -1,5 +1,6 @@
 package com.bottlerocketstudios.compose.alertdialog
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -13,7 +14,7 @@ import com.bottlerocketstudios.compose.R
 import com.bottlerocketstudios.compose.utils.Preview
 
 @Composable
-fun CustomAlertDialog(title: Int, message: Int, onDismiss: () -> Unit) {
+fun CustomAlertDialog(@StringRes title: Int, @StringRes message: Int, onDismiss: () -> Unit) {
     MaterialTheme {
         Column {
 

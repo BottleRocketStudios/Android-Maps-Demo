@@ -24,10 +24,12 @@ private const val DEFAULT_SATURATION = 1f
 private const val DEFAULT_VALUE = .6f
 private const val HUE_RANGE = 220f
 private const val SIZE_RANGE = 300f
-private const val PADDING = 12
+private const val PADDING_DP = 12
 private const val INDEX_ONE = 1
 private const val TRANSPARENT_WHITE = -0x7f000001
 private const val STROKE_MODIFIER = 3
+
+// Inspired by DefaultClusterRenderer.java from the Google Maps KTX library.
 fun clusterIconGenerator(context: Context, cluster: Cluster<MapClusterItem>): BitmapDescriptor {
     val iconGenerator = IconGenerator(context)
     iconGenerator.apply {
@@ -53,7 +55,7 @@ fun clusterIconGenerator(context: Context, cluster: Cluster<MapClusterItem>): Bi
     return descriptor
 }
 
-// TextView is used to display the number in the cluster.
+// TextView is used to display the number in the cluster. From the DefaultClusterRenderer.java
 private fun makeSquaredTextView(context: Context): ClusterMarkerTextView {
     val density = context.resources.displayMetrics.density
     val squareTextView = ClusterMarkerTextView(context)
@@ -62,12 +64,11 @@ private fun makeSquaredTextView(context: Context): ClusterMarkerTextView {
         this.layoutParams = layoutParams
         id = R.id.amu_text
     }
-    val padding: Int = (PADDING * density).toInt()
+    val padding: Int = (PADDING_DP * density).toInt()
     squareTextView.setPadding(padding, padding, padding, padding)
     return squareTextView
 }
 
-// Makes the
 private fun makeMapClusterBackground(context: Context): LayerDrawable {
     val density = context.resources.displayMetrics.density
     circleBackground = ShapeDrawable(OvalShape())
