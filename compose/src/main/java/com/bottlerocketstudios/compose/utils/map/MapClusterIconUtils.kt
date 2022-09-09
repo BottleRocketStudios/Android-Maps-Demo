@@ -91,9 +91,5 @@ private fun getColor(clusterSize: Int): Int = Color.HSVToColor(
 
 fun getClusterText(size: Int) = "$size" + if (size >= buckets.first()) "+" else ""
 
-//    return if (bucketSize < buckets.first()) {
-//        bucketSize.toString()
-//    } else "$bucketSize+"
-
 // Determine where the cluster will go in which bucket. Buckets are used for the String that will be displayed to the user.
 fun getBucket(cluster: Cluster<MapClusterItem>) = buckets.lastOrNull { cluster.size > it } ?: cluster.size
